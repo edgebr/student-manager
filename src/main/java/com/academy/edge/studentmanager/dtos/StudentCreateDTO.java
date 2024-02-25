@@ -31,6 +31,6 @@ public class StudentCreateDTO {
     @Min(1)
     private int period;
 
-    @Pattern(regexp = "[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}", message = "Código de ativação inválido")
+    @NotBlank(message = "Código de ativação é obrigatório")
     private String activationCode;
 }

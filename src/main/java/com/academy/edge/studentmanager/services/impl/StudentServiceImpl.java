@@ -4,7 +4,9 @@ import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
+import com.academy.edge.studentmanager.services.InvitationService;
 import com.academy.edge.studentmanager.services.StudentService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -24,11 +27,14 @@ public class StudentServiceImpl implements StudentService {
 
     final PasswordEncoder passwordEncoder;
 
+    final InvitationService invitationService;
+
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, InvitationService invitationService) {
         this.studentRepository = studentRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.invitationService = invitationService;
     }
 
     @Override
@@ -47,10 +53,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO) {
+        if (!invitationService.isInvitationValid(studentCreateDTO.getActivationCode(), studentCreateDTO.getEmail())) {
+            throw new ResponseStatusException(FORBIDDEN, "Invalid invitation code");
+        }
+
         Student student = modelMapper.map(studentCreateDTO, Student.class);
-        student.setPassword(passwordEncoder.encode(student.getPassword()));
-        student = this.studentRepository.save(student);
+        student.setPassword(passwordEncoder.encode(studentCreateDTO.getPassword()));
+        student = studentRepository.save(student);
+        invitationService.deleteInvitation(studentCreateDTO.getActivationCode(), studentCreateDTO.getEmail());
         return modelMapper.map(student, StudentResponseDTO.class);
     }
 
