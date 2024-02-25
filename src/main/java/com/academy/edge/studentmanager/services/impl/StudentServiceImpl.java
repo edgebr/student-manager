@@ -7,6 +7,7 @@ import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.services.StudentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -21,12 +22,14 @@ public class StudentServiceImpl implements StudentService {
 
     final ModelMapper modelMapper;
 
+    final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper) {
+    public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
-
 
     @Override
     public List<StudentResponseDTO> getStudents() {
@@ -46,6 +49,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO) {
         Student student = modelMapper.map(studentCreateDTO, Student.class);
+        student.setPassword(passwordEncoder.encode(student.getPassword()));
         student = this.studentRepository.save(student);
         return modelMapper.map(student, StudentResponseDTO.class);
     }
