@@ -6,6 +6,7 @@ import com.academy.edge.studentmanager.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +21,13 @@ public class StudentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents(){
         return new ResponseEntity<>(studentService.getStudents(), HttpStatus.OK);
     }
 
     @GetMapping({"/{uuid}"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or #uuid == authentication.principal.getId()")
     public ResponseEntity<StudentResponseDTO> getStudent(@PathVariable String uuid){
         return new ResponseEntity<>(studentService.getStudentById(uuid), HttpStatus.OK);
     }
@@ -32,5 +35,12 @@ public class StudentController {
     @PostMapping()
     public ResponseEntity<StudentResponseDTO> saveStudent(@Valid @RequestBody StudentCreateDTO studentCreateDTO){
         return new ResponseEntity<>(studentService.insertStudent(studentCreateDTO), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping({"/{uuid}"})
+    @PreAuthorize("hasAnyRole('ADMIN') || #uuid == authentication.principal.getId()")
+    public ResponseEntity<Void> deleteStudent(@PathVariable String uuid){
+        studentService.deleteStudent(uuid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
