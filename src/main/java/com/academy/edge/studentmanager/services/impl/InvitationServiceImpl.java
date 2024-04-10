@@ -48,7 +48,7 @@ public class InvitationServiceImpl implements InvitationService {
                 invitation.setCode(code);
 
                 invitationRepository.save(invitation);
-                emailService.sendEmail(email, "Bem vindo ao Academy!", this.constructHtmlMessageText(code));
+                emailService.sendEmail(email, "Bem vindo ao Academy!", this.constructHtmlMessageText(code, email));
 
                 result.getSuccessfulEmails().add(email);
             } catch (Exception e){
@@ -60,7 +60,7 @@ public class InvitationServiceImpl implements InvitationService {
         return result;
     }
 
-    private String constructHtmlMessageText(String code){
+    private String constructHtmlMessageText(String code, String email){
         String content = "Olá,<br><br>"
                 + "Estamos muito felizes em dar as boas-vindas a você ao programa Edge Academy! Sua jornada de descoberta e aprimoramento está prestes a começar, e não poderíamos estar mais animados por ter você conosco.<br><br>"
                 + "Para garantir uma transição suave para esta nova fase de aprendizado, por favor, realize sua inscrição na plataforma clicando no link abaixo. É um pequeno passo para você, mas um salto gigante em sua trajetória de aprendizado!<br><br>"
@@ -69,7 +69,7 @@ public class InvitationServiceImpl implements InvitationService {
                 + "Com apreço,<br>"
                 + "<strong>Equipe Edge Academy</strong><br><br>"
                 + "<em>PS: Prepare-se para uma experiência enriquecedora cheia de aprendizado e crescimento. Estamos ansiosos para ver o seu progresso!</em>";
-        String siteUrl = "https://edge.academy.com/register/"+code;
+        String siteUrl = "https://edge.academy.com/register/"+code + "?email=" + email;
         content = content.replace("[[URL]]", siteUrl);
 
         String htmlContent = "<!DOCTYPE html>"
