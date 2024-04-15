@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,7 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = modelMapper.map(studentCreateDTO, Student.class);
         student.setPassword(passwordEncoder.encode(studentCreateDTO.getPassword()));
+        student.setEntryDate(new Date(System.currentTimeMillis()));
         student = studentRepository.save(student);
         invitationService.deleteInvitation(studentCreateDTO.getActivationCode(), studentCreateDTO.getEmail());
         return modelMapper.map(student, StudentResponseDTO.class);
