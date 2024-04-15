@@ -11,9 +11,12 @@ import lombok.NoArgsConstructor;
 public class StudentResponseDTO {
     private String id;
     private String name;
-    private String about;
-    private String photoUrl;
-    private String linkedIn;
+    private String birthdate;
     private Course course;
+    private String registration;
+    private String phone;
+    private String secondaryPhone;
     private String period;
+    private String entryPeriod;
+
 }
