@@ -14,6 +14,10 @@ import java.sql.Date;
 @Table(name = "students")
 @PrimaryKeyJoinColumn(name="id")
 public class Student extends User{
+
+    @Column
+    private String birthdate;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     Course course;
@@ -22,17 +26,20 @@ public class Student extends User{
     String registration;
 
     @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private String secondaryPhone;
+
+    @Column(nullable = false)
     int period = 1;
 
-    @Column()
-    String phone;
+    @Column(nullable = false)
+    private String entryPeriod;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     StudentStatus studentStatus = StudentStatus.ACTIVE;
-
-    @Column(precision = 2)
-    float coefficient;
 
     @Column()
     Date entryDate;

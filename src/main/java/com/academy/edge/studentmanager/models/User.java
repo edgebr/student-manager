@@ -35,20 +35,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     String name;
 
-    @Column()
-    String about;
-
     @Column(nullable = false)
     String email;
 
     @Column(nullable = false)
     String password;
-
-    @Column()
-    String linkedIn;
-
-    @Column()
-    String photoUrl;
 
     @CreationTimestamp
     @Column(updatable = false)
