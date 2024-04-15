@@ -92,17 +92,6 @@ public class StudentControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    /*@Test
-    void itShouldCreateAStudent() throws Exception{
-        ObjectMapper mapper = new ObjectMapper();
-        StudentCreateDTO studentCreateDTO = new StudentCreateDTO("John Doe", "john@email.com", "Edge12345678@", Course.COMPUTER_SCIENCE, "9876543210", 5, "CODE");
-        String jsonStudentDTO = mapper.writeValueAsString(studentCreateDTO);
-        mockMvc.perform(post("/api/v1/students")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonStudentDTO))
-                .andExpect(status().isCreated());
-    }*/
-
     @Test
     @WithMockUser(roles = {"ADMIN"})
     void adminCanDeleteAStudentAccount() throws Exception{
