@@ -16,7 +16,7 @@ import java.sql.Date;
 public class Student extends User{
 
     @Column
-    private String birthdate;
+    private Date birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -28,7 +28,7 @@ public class Student extends User{
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
+    @Column()
     private String secondaryPhone;
 
     @Column(nullable = false)

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.sql.Date;
+
 @Getter
 @AllArgsConstructor()
 public class StudentCreateDTO {
@@ -14,7 +16,7 @@ public class StudentCreateDTO {
 
     @NotBlank(message = "Insira uma data de nascimento")
     @ValidBirthdate(message = "Informe uma data de nascimento válida")
-    private String birthdate;
+    private Date birthDate;
 
     @NotBlank(message = "Insira um email")
     @Email(message = "Email inválido")
@@ -38,7 +40,6 @@ public class StudentCreateDTO {
     @Pattern(regexp = "\\d{2}9\\d{8}", message = "Informe um número de telefone válido")
     private String phone;
 
-    @NotNull
     @Pattern(regexp = "(\\d{2}9\\d{8})|($)", message = "Informe um número de telefone secundário válido")
     private String secondaryPhone;
 
