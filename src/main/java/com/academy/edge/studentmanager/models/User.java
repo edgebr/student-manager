@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @UpdateTimestamp
     Timestamp updatedAt;
 
+    @Column(insertable = false, updatable = false)
+    String dtype;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+Role.USER.name()));
