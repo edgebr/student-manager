@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.sql.Date;
 
 @Getter
 @AllArgsConstructor()
@@ -14,9 +13,9 @@ public class StudentCreateDTO {
     @NotBlank(message = "Nome é obrigatório")
     private String name;
 
-    @NotBlank(message = "Insira uma data de nascimento")
+    @NotNull(message = "Insira uma data de nascimento")
     @ValidBirthdate(message = "Informe uma data de nascimento válida")
-    private Date birthDate;
+    private String birthDate;
 
     @NotBlank(message = "Insira um email")
     @Email(message = "Email inválido")
