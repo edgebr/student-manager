@@ -11,12 +11,16 @@ import lombok.NoArgsConstructor;
 public class StudentResponseDTO {
     private String id;
     private String name;
-    private String birthdate;
+    private String photoUrl;
+    private String birthDate;
     private Course course;
     private String registration;
     private String phone;
     private String secondaryPhone;
     private String period;
     private String entryPeriod;
+    private String dtype;
+    private String email;
+    private String entryDate;
 
 }
