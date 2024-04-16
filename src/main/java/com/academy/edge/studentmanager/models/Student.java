@@ -1,7 +1,6 @@
 package com.academy.edge.studentmanager.models;
 
 import com.academy.edge.studentmanager.enums.Course;
-import com.academy.edge.studentmanager.enums.StudentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,10 +35,6 @@ public class Student extends User{
 
     @Column(nullable = false)
     private String entryPeriod;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    StudentStatus studentStatus = StudentStatus.ACTIVE;
 
     @Column()
     Date entryDate;
