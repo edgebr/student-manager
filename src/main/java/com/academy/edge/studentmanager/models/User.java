@@ -41,6 +41,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     String password;
 
+    @Column
+    String photoUrl;
+
     @CreationTimestamp
     @Column(updatable = false)
     Timestamp createdAt;
