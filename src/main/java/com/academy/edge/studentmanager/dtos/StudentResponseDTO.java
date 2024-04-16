@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,7 +14,7 @@ public class StudentResponseDTO {
     private String id;
     private String name;
     private String photoUrl;
-    private String birthDate;
+    private Date birthDate;
     private Course course;
     private String registration;
     private String phone;
@@ -21,6 +23,6 @@ public class StudentResponseDTO {
     private String entryPeriod;
     private String dtype;
     private String email;
-    private String entryDate;
+    private Date entryDate;
 
 }
