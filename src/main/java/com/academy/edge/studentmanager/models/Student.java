@@ -38,4 +38,9 @@ public class Student extends User{
 
     @Column()
     Date entryDate;
+
+    @Override
+    public String getDtype() {
+        return "Student";
+    }
 }
