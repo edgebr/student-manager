@@ -2,6 +2,9 @@ package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.InstructorResponseDTO;
 import com.academy.edge.studentmanager.services.InstructorService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +28,14 @@ public class InstructorController {
     }
 
     @GetMapping
+    @Operation(summary = "Retrieve all Instructors infos", security = {@SecurityRequirement(name = "JWT")})
     public ResponseEntity<List<InstructorResponseDTO>> getAllInstructors(){
         return new ResponseEntity<>(instructorService.getAllInstructors(), HttpStatus.OK);
     }
 
     @GetMapping({"/{email}"})
-    public ResponseEntity<InstructorResponseDTO> getInstructor(@PathVariable String email){
+    @Operation(summary = "Retrieve instructors by email", security = {@SecurityRequirement(name = "JWT")})
+    public ResponseEntity<InstructorResponseDTO> getInstructor(@Parameter(description = "Email of searched Instructor") @PathVariable String email){
         return new ResponseEntity<>(instructorService.getInstructorByEmail(email), HttpStatus.OK);
     }
 }

@@ -3,6 +3,8 @@ package com.academy.edge.studentmanager.controllers;
 import com.academy.edge.studentmanager.dtos.InvitationRequestDTO;
 import com.academy.edge.studentmanager.dtos.InvitationResponseDTO;
 import com.academy.edge.studentmanager.services.InvitationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ public class InvitationController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'INSTRUCTOR')")
+    @Operation(summary = "Invite students by a list of valid emails", security = {@SecurityRequirement(name = "JWT")})
     public ResponseEntity<InvitationResponseDTO> register(@Valid @RequestBody InvitationRequestDTO invitationRequestDTO) {
         return new ResponseEntity<>(invitationService.sendInvitation(invitationRequestDTO.getEmails()), HttpStatus.MULTI_STATUS);
     }
