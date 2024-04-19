@@ -25,8 +25,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class StudentServiceImpl implements StudentService {
     final StudentRepository studentRepository;
 
-    final InvitationRepository invitationRepository;
-
     final ModelMapper modelMapper;
 
     final PasswordEncoder passwordEncoder;
@@ -34,9 +32,8 @@ public class StudentServiceImpl implements StudentService {
     final InvitationService invitationService;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, InvitationRepository invitationRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, InvitationService invitationService) {
+    public StudentServiceImpl(StudentRepository studentRepository , ModelMapper modelMapper, PasswordEncoder passwordEncoder, InvitationService invitationService) {
         this.studentRepository = studentRepository;
-        this.invitationRepository = invitationRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.invitationService = invitationService;
