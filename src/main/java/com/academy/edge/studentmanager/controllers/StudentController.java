@@ -38,7 +38,7 @@ public class StudentController {
     }
 
     @DeleteMapping({"/{email}"})
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public ResponseEntity<Void> deleteStudent(@PathVariable String email){
         studentService.deleteStudent(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
