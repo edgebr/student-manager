@@ -1,6 +1,7 @@
 package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.services.S3Service;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +22,11 @@ public class S3ServiceImpl implements S3Service {
         this.s3client.createBucket(bucketName);
     }
     public void uploadFile(String keyName, MultipartFile file) throws IOException {
-        var putObjectResult = s3client.putObject(bucketName, keyName, file.getInputStream(), null);
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+
+        var putObjectResult = s3client.putObject(bucketName, keyName, file.getInputStream(), metadata);
         log.info(putObjectResult.getMetadata());
 
     }
