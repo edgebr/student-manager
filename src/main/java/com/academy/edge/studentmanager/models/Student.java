@@ -47,4 +47,8 @@ public class Student extends User{
         return "Student";
     }
 
+    @Override
+    public boolean isEnabled(){
+        return false;
+    }
 }
