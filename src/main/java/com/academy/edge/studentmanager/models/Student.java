@@ -1,11 +1,16 @@
 package com.academy.edge.studentmanager.models;
 
 import com.academy.edge.studentmanager.enums.Course;
+import com.academy.edge.studentmanager.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.sql.Date;
+import java.util.Collection;
+import java.util.Collections;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -43,12 +48,12 @@ public class Student extends User{
     private Date entryDate;
 
     @Override
-    public String getDtype() {
-        return "Student";
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+ Role.STUDENT.name()));
     }
 
     @Override
-    public boolean isEnabled(){
-        return false;
+    public String getDtype() {
+        return "Student";
     }
 }
