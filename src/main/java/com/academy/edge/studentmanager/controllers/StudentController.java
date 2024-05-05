@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,5 +47,17 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable String email){
         studentService.deleteStudent(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentStudent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            StudentResponseDTO studentResponseDTO = studentService.getStudentByEmail(email);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No student logged in", HttpStatus.UNAUTHORIZED);
+        }
     }
 }
