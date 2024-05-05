@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -50,14 +51,14 @@ public class StudentController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentStudent() {
+    public ResponseEntity<StudentResponseDTO> getCurrentStudent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
             StudentResponseDTO studentResponseDTO = studentService.getStudentByEmail(email);
             return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("No student logged in", HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");
         }
     }
 }
