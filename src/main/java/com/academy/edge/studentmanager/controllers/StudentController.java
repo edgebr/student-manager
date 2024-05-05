@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentUpdateDTO;
 import com.academy.edge.studentmanager.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,16 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping({"/{email}"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<StudentResponseDTO> updateStudentByEmail(@PathVariable String email,
+                                                     @RequestBody @Valid StudentUpdateDTO studentUpdateDTO) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudent(email, studentUpdateDTO);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+    }
+
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentStudent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -60,4 +71,17 @@ public class StudentController {
             return new ResponseEntity<>("No student logged in", HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @PutMapping("/me")
+    public ResponseEntity<StudentResponseDTO> updateCurrentStudent(@RequestBody @Valid StudentUpdateDTO studentUpdateDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            StudentResponseDTO studentResponseDTO = studentService.updateStudent(email, studentUpdateDTO);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");
+        }
+    }
+
 }
