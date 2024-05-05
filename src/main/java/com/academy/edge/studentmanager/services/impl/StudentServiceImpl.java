@@ -4,7 +4,6 @@ import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
 import com.academy.edge.studentmanager.models.Invitation;
 import com.academy.edge.studentmanager.models.Student;
-import com.academy.edge.studentmanager.repositories.InvitationRepository;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.services.InvitationService;
 import com.academy.edge.studentmanager.services.S3Service;
