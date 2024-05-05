@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -59,6 +60,15 @@ public class StudentController {
         return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
     }
 
+    @PutMapping({"/{email}/photo"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<StudentResponseDTO> updateStudentPhotoByEmail(@PathVariable String email,
+                                                                        @RequestParam("file") MultipartFile file) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudentPhoto(email, file);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+    }
+
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentStudent() {
@@ -84,4 +94,16 @@ public class StudentController {
         }
     }
 
+    @PutMapping("/me/photo")
+    public ResponseEntity<StudentResponseDTO> updateCurrentStudentPhoto(
+            @RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            StudentResponseDTO studentResponseDTO = studentService.updateStudentPhoto(email, file);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");
+        }
+    }
 }

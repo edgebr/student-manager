@@ -16,9 +16,9 @@ public interface StudentService {
 
     StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO, MultipartFile file);
 
-    //TODO: update student
-    //void updateStudent(String uuid, );
     StudentResponseDTO updateStudent(String email, StudentUpdateDTO studentUpdateDTO);
+
+    StudentResponseDTO updateStudentPhoto(String email, MultipartFile file);
 
     void deleteStudent(String email);
 }

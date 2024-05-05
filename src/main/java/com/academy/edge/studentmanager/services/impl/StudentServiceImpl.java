@@ -105,6 +105,36 @@ public class StudentServiceImpl implements StudentService {
         return modelMapper.map(student, StudentResponseDTO.class);
     }
 
+    @Override
+    public StudentResponseDTO updateStudentPhoto(String email, MultipartFile file) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
+
+        if(!contentTypes.contains(file.getContentType())){
+            throw new ResponseStatusException(BAD_REQUEST, "File is not a image file");
+        }
+
+        String newPhotoUrl = student.getRegistration() + "_" + file.getOriginalFilename();
+        String oldPhotoUrl = student.getPhotoUrl();
+
+        if (newPhotoUrl.equals(student.getPhotoUrl())) {
+            newPhotoUrl = student.getRegistration() + "_new_" + file.getOriginalFilename();
+        }
+
+        try {
+            s3Service.uploadFile(newPhotoUrl, file);
+            s3Service.deleteFile(oldPhotoUrl);
+        } catch (IOException e) {
+            s3Service.deleteFile(newPhotoUrl);
+            throw new RuntimeException(e);
+        }
+
+        student.setPhotoUrl(newPhotoUrl);
+        studentRepository.save(student);
+
+        return modelMapper.map(student, StudentResponseDTO.class);
+    }
 
     @Override
     public void deleteStudent(String email) {
