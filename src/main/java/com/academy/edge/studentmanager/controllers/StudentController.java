@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentUpdateDTO;
 import com.academy.edge.studentmanager.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -50,12 +51,56 @@ public class StudentController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping({"/{email}"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<StudentResponseDTO> updateStudentByEmail(@PathVariable String email,
+                                                     @RequestBody @Valid StudentUpdateDTO studentUpdateDTO) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudent(email, studentUpdateDTO);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+    }
+
+    @PutMapping({"/{email}/photo"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public ResponseEntity<StudentResponseDTO> updateStudentPhotoByEmail(@PathVariable String email,
+                                                                        @RequestParam("file") MultipartFile file) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudentPhoto(email, file);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+    }
+
+
     @GetMapping("/me")
     public ResponseEntity<StudentResponseDTO> getCurrentStudent() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
             StudentResponseDTO studentResponseDTO = studentService.getStudentByEmail(email);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");
+        }
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<StudentResponseDTO> updateCurrentStudent(@RequestBody @Valid StudentUpdateDTO studentUpdateDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            StudentResponseDTO studentResponseDTO = studentService.updateStudent(email, studentUpdateDTO);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");
+        }
+    }
+
+    @PutMapping("/me/photo")
+    public ResponseEntity<StudentResponseDTO> updateCurrentStudentPhoto(
+            @RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            StudentResponseDTO studentResponseDTO = studentService.updateStudentPhoto(email, file);
             return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No student logged in");

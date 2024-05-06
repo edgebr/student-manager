@@ -8,6 +8,7 @@ import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.services.InvitationService;
 import com.academy.edge.studentmanager.services.S3Service;
 import com.academy.edge.studentmanager.services.StudentService;
+import com.academy.edge.studentmanager.dtos.StudentUpdateDTO;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,49 @@ public class StudentServiceImpl implements StudentService {
             s3Service.deleteFile(student.getPhotoUrl());
             throw new RuntimeException(e);
         }
+        return modelMapper.map(student, StudentResponseDTO.class);
+    }
+
+    @Override
+    public StudentResponseDTO updateStudent(String email, StudentUpdateDTO studentUpdateDTO) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
+
+        modelMapper.map(studentUpdateDTO, student);
+        studentRepository.save(student);
+
+        return modelMapper.map(student, StudentResponseDTO.class);
+    }
+
+    @Override
+    public StudentResponseDTO updateStudentPhoto(String email, MultipartFile file) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
+
+        if(!contentTypes.contains(file.getContentType())){
+            throw new ResponseStatusException(BAD_REQUEST, "File is not a image file");
+        }
+
+        String newPhotoUrl = student.getRegistration() + "_" + file.getOriginalFilename();
+        String oldPhotoUrl = student.getPhotoUrl();
+
+        if (newPhotoUrl.equals(student.getPhotoUrl())) {
+            newPhotoUrl = student.getRegistration() + "_new_" + file.getOriginalFilename();
+        }
+
+        try {
+            s3Service.uploadFile(newPhotoUrl, file);
+            s3Service.deleteFile(oldPhotoUrl);
+        } catch (IOException e) {
+            s3Service.deleteFile(newPhotoUrl);
+            throw new RuntimeException(e);
+        }
+
+        student.setPhotoUrl(newPhotoUrl);
+        studentRepository.save(student);
+
         return modelMapper.map(student, StudentResponseDTO.class);
     }
 
