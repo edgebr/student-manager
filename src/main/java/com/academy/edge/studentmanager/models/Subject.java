@@ -15,5 +15,5 @@ public class Subject {
     private String name;
 
     @Column(nullable = false)
-    private Integer Workload;
+    private Integer workload;
 }
