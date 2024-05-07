@@ -6,16 +6,18 @@ import lombok.Data;
 
 @Entity
 @Data
-@IdClass(GradesId.class)
+@IdClass(GradeId.class)
 @Table(name = "grades")
-public class Grades {
+public class Grade {
     @Id
-    @Column(nullable = false)
-    private String subjectCode;
+    @ManyToOne
+    @JoinColumn(name = "subjectCode", referencedColumnName = "code")
+    private Subject subject;
 
     @Id
-    @Column(nullable = false)
-    private String studentId;
+    @ManyToOne
+    @JoinColumn(name = "studentId", referencedColumnName = "id")
+    private Student student;
 
     @Id
     @Column(nullable = false)

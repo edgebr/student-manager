@@ -9,8 +9,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class GradesId implements Serializable{
-    private String subjectCode;
-    private String studentId;
+public class GradeId implements Serializable {
+    private Subject subject;
+    private Student student;
     private Integer period;
 }
