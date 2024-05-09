@@ -47,7 +47,7 @@ public class User implements UserDetails {
     String photoUrl;
 
     @Column
-    String aboutMe;
+    String about;
 
     @CreationTimestamp
     @Column(updatable = false)
