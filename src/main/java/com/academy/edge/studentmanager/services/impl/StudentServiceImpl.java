@@ -127,7 +127,7 @@ public class StudentServiceImpl implements StudentService {
             s3Service.deleteFile(oldPhotoUrl);
         } catch (IOException e) {
             s3Service.deleteFile(newPhotoUrl);
-            throw new RuntimeException(e);
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Error uploading the file");
         }
 
         student.setPhotoUrl(newPhotoUrl);
