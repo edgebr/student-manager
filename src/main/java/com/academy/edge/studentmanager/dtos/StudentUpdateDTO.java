@@ -41,6 +41,6 @@ public class StudentUpdateDTO {
     @Pattern(regexp = "\\d{4}\\.[1-2]", message = "Informe um periodo válido")
     private String entryPeriod;
 
-    @Max(2600)
+    @Size(max = 2600)
     private String about;
 }
