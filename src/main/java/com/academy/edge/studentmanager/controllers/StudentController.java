@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentUpdateDTO;
 import com.academy.edge.studentmanager.services.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,23 @@ public class StudentController {
     public ResponseEntity<Void> deleteStudent(@PathVariable String email){
         studentService.deleteStudent(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping({"/{email}"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<StudentResponseDTO> updateStudentByEmail(@PathVariable String email,
+                                                     @RequestBody @Valid StudentUpdateDTO studentUpdateDTO) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudent(email, studentUpdateDTO);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
+    }
+
+    @PutMapping({"/{email}/photo"})
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<StudentResponseDTO> updateStudentPhotoByEmail(@PathVariable String email,
+                                                                        @RequestParam("file") MultipartFile file) {
+        StudentResponseDTO studentResponseDTO = studentService.updateStudentPhoto(email, file);
+
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
     }
 }

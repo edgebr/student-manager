@@ -14,6 +14,7 @@ public class StudentResponseDTO {
     private String id;
     private String name;
     private String photoUrl;
+    private String about;
     private Date birthDate;
     private Course course;
     private String registration;
