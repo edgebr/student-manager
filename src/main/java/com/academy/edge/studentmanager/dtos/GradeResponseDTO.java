@@ -1,18 +1,15 @@
 package com.academy.edge.studentmanager.dtos;
 
-import com.academy.edge.studentmanager.enums.Course;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import com.academy.edge.studentmanager.enums.SubjectStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-
+@Data
+@NoArgsConstructor
 public class GradeResponseDTO {
-    private String status;
+    private SubjectStatus subjectStatus;
     private double finalGrade;
-    private String subjectId;
+    private String subjectCode;
     private int period;
     private String studentId;
 }

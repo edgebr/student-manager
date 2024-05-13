@@ -1,14 +1,13 @@
 package com.academy.edge.studentmanager.dtos;
 
-import com.academy.edge.studentmanager.enums.Course;
-import com.academy.edge.studentmanager.validators.ValidBirthdate;
+import com.academy.edge.studentmanager.enums.SubjectStatus;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 public class GradeUpdateDTO {
-    @NotBlank
-    private String status;
+    @NotNull
+    private SubjectStatus subjectStatus;
     @NotNull
     private double finalGrade;
     @NotBlank

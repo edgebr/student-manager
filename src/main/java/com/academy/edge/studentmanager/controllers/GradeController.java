@@ -1,11 +1,12 @@
 package com.academy.edge.studentmanager.controllers;
 
+import com.academy.edge.studentmanager.services.GradeService;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
 import com.academy.edge.studentmanager.dtos.GradeUpdateDTO;
-import com.academy.edge.studentmanager.models.Grade;
-import com.academy.edge.studentmanager.models.GradeId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -13,12 +14,16 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/grades")
 public class GradeController {
 
+    GradeService gradeService;
+    @Autowired
+    public GradeController(GradeService gradeService) {
+        this.gradeService = gradeService;
+    }
 
-
-    @PutMapping({"/{email}"}) // Mudar pra grade
-    public ResponseEntity<GradeResponseDTO> updateGrade(@PathVariable String email,
-                                                                   @RequestBody @Valid GradeUpdateDTO gradeUpdateDTO) {
-        GradeResponseDTO gradeResponseDTO = GradeService.updateGrade();
+    @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR', 'STUDENT')")
+    public ResponseEntity<GradeResponseDTO> updateGrade(@Valid @RequestBody GradeUpdateDTO gradeUpdateDTO) {
+        GradeResponseDTO gradeResponseDTO = gradeService.updateGrade(gradeUpdateDTO);
 
         return new ResponseEntity<>(gradeResponseDTO, HttpStatus.OK);
     }
