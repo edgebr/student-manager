@@ -22,7 +22,7 @@ public class GradeController {
     }
 
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'INSTRUCTOR', 'STUDENT')")
     public ResponseEntity<GradeResponseDTO> saveGrade(@Valid @RequestBody GradeCreateDTO gradeCreateDTO){
         return new ResponseEntity<>(gradeService.saveGrade(gradeCreateDTO), HttpStatus.OK);
     }
