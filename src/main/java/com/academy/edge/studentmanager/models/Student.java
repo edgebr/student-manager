@@ -18,6 +18,8 @@ import java.util.Collections;
 @Table(name = "students")
 @PrimaryKeyJoinColumn(name="id")
 public class Student extends User{
+    public static final int MAX_NUM_DEGREE_SEMESTER_COMPUTER_SCIENCE = 12;
+    public static final int MAX_NUM_DEGREE_SEMESTER_COMPUTER_ENGINEERING = 15;
 
     @Column
     private Date birthDate;
