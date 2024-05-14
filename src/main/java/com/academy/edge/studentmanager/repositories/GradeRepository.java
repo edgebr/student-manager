@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface GradeRepository extends CrudRepository<Grade, GradeId>{
     List<Grade> findGradeByStudentId(String studentId);
+
+    Integer deleteGradeByStudentIdAndSubjectCodeAndPeriod(String studentId, String subjectCode, Integer period);
 }

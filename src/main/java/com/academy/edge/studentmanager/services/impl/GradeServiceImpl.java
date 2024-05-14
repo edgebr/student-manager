@@ -1,6 +1,7 @@
 package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
+import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
 import com.academy.edge.studentmanager.models.Grade;
 import com.academy.edge.studentmanager.models.Student;
@@ -12,6 +13,7 @@ import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -47,5 +49,29 @@ public class GradeServiceImpl implements GradeService{
         }
 
         return modelMapper.map(grade, GradeResponseDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public HttpStatus deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
+        Integer deleted;
+        try{
+            Student student = studentRepository
+                    .findByEmail(gradeDeleteDTO.getStudentEmail())
+                    .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+            deleted = gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
+                                student.getId(),
+                                gradeDeleteDTO.getSubjectCode(),
+                                gradeDeleteDTO.getPeriod());
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
+
+        if(deleted == 1){
+            return HttpStatus.NO_CONTENT;
+        }
+        return HttpStatus.NOT_FOUND;
     }
 }
