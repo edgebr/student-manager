@@ -16,6 +16,6 @@ public class GradeDeleteDTO {
 
     @NotNull
     @Min(1)
-    @Max(12)
+    @Max(15)
     private Integer period;
 }
