@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
 import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,16 +21,15 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
-    @PostMapping("/{email}")
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<GradeResponseDTO> saveGrade(@PathVariable String email,
-                                                      @Valid @RequestBody GradeCreateDTO gradeCreateDTO){
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeCreateDTO.getStudentEmail()")
+    public ResponseEntity<GradeResponseDTO> saveGrade(@Valid @RequestBody GradeCreateDTO gradeCreateDTO){
         return new ResponseEntity<>(gradeService.saveGrade(gradeCreateDTO), HttpStatus.OK);
     }
 
     @GetMapping("/{email}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<GradeResponseDTO>> getStudentGrades(@PathVariable String email){
+    public ResponseEntity<List<StudentGradesDTO>> getStudentGrades(@PathVariable String email){
         return new ResponseEntity<>(gradeService.getStudentGrades(email), HttpStatus.OK);
     }
 }

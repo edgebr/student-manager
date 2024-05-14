@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
 import com.academy.edge.studentmanager.models.Grade;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.models.Subject;
@@ -52,14 +53,26 @@ public class GradeServiceImpl implements GradeService{
     }
 
     @Override
-    public List<GradeResponseDTO> getStudentGrades(String email) {
+    public List<StudentGradesDTO> getStudentGrades(String email) {
         Student student = studentRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
         List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
 
-        return grades.stream()
-                .map(grade -> modelMapper.map(grade, GradeResponseDTO.class))
-                .toList();
+        List<StudentGradesDTO> studentGrades = new java.util.ArrayList<>();
+
+        for (Grade grade : grades) {
+            StudentGradesDTO studentGrade = new StudentGradesDTO();
+
+            modelMapper.map(grade, studentGrade);
+
+            studentGrade.setWorkload(String.valueOf(grade.getSubject().getWorkload()));
+            studentGrade.setSubjectCode(grade.getSubject().getCode());
+            studentGrade.setName(grade.getSubject().getName());
+
+            studentGrades.add(studentGrade);
+        }
+
+        return studentGrades;
     }
 }
