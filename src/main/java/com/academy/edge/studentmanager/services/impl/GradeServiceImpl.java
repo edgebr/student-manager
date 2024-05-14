@@ -15,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -31,7 +33,7 @@ public class GradeServiceImpl implements GradeService{
         Grade grade = modelMapper.map(gradeCreateDTO, Grade.class);
         try{
             Student student = studentRepository
-                    .findById(gradeCreateDTO.getStudentId())
+                    .findByEmail(gradeCreateDTO.getEmailId())
                     .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
             grade.setStudent(student);
 
@@ -47,5 +49,17 @@ public class GradeServiceImpl implements GradeService{
         }
 
         return modelMapper.map(grade, GradeResponseDTO.class);
+    }
+
+    @Override
+    public List<GradeResponseDTO> getStudentGrades(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+
+        return grades.stream()
+                .map(grade -> modelMapper.map(grade, GradeResponseDTO.class))
+                .toList();
     }
 }
