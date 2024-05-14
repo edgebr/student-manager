@@ -15,7 +15,7 @@ public class GradeCreateDTO {
     private String subjectCode;
 
     @NotBlank
-    private String studentId;
+    private String emailId;
 
     @NotNull
     @Min(1)
