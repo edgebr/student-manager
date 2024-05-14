@@ -20,9 +20,10 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'INSTRUCTOR', 'STUDENT')")
-    public ResponseEntity<GradeResponseDTO> saveGrade(@Valid @RequestBody GradeCreateDTO gradeCreateDTO){
+    @PostMapping("/{email}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<GradeResponseDTO> saveGrade(@PathVariable String email,
+                                                      @Valid @RequestBody GradeCreateDTO gradeCreateDTO){
         return new ResponseEntity<>(gradeService.saveGrade(gradeCreateDTO), HttpStatus.OK);
     }
 

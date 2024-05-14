@@ -33,7 +33,7 @@ public class GradeServiceImpl implements GradeService{
         Grade grade = modelMapper.map(gradeCreateDTO, Grade.class);
         try{
             Student student = studentRepository
-                    .findByEmail(gradeCreateDTO.getEmailId())
+                    .findByEmail(gradeCreateDTO.getStudentEmail())
                     .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
             grade.setStudent(student);
 
