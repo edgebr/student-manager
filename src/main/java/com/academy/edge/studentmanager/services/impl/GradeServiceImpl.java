@@ -1,8 +1,11 @@
 package com.academy.edge.studentmanager.services.impl;
 
+
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
 import com.academy.edge.studentmanager.dtos.GradeUpdateDTO;
+import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
+import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.repositories.GradeRepository;
 import com.academy.edge.studentmanager.repositories.SubjectRepository;
@@ -17,6 +20,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMappe;
 import static org.springframework.http.HttpStatus.*;
+
+import java.util.List;
+
 
 
 @Service
@@ -74,4 +80,41 @@ public class GradeServiceImpl implements GradeService {
         return modelMapper.map(grade, GradeResponseDTO.class);
     }
 
+
+    @Override
+    public List<StudentGradesDTO> getStudentGrades(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+
+        List<StudentGradesDTO> studentGrades = new java.util.ArrayList<>();
+
+        for (Grade grade : grades) {
+            StudentGradesDTO studentGrade = new StudentGradesDTO();
+
+            modelMapper.map(grade, studentGrade);
+
+            studentGrade.setWorkload(String.valueOf(grade.getSubject().getWorkload()));
+            studentGrade.setSubjectCode(grade.getSubject().getCode());
+            studentGrade.setName(grade.getSubject().getName());
+
+            studentGrades.add(studentGrade);
+        }
+
+        return studentGrades;
+    }
+
+    @Override
+    @Transactional
+    public void deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
+        Student student = studentRepository
+                            .findByEmail(gradeDeleteDTO.getStudentEmail())
+                            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
+                            student.getId(),
+                            gradeDeleteDTO.getSubjectCode(),
+                            gradeDeleteDTO.getPeriod());
+    }
 }
