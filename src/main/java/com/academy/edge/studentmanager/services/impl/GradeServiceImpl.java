@@ -3,6 +3,7 @@ package com.academy.edge.studentmanager.services.impl;
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
 import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
+import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
 import com.academy.edge.studentmanager.models.Grade;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.models.Subject;
@@ -15,6 +16,8 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -49,6 +52,29 @@ public class GradeServiceImpl implements GradeService{
 
         return modelMapper.map(grade, GradeResponseDTO.class);
     }
+
+    @Override
+    public List<StudentGradesDTO> getStudentGrades(String email) {
+        Student student = studentRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+
+        List<StudentGradesDTO> studentGrades = new java.util.ArrayList<>();
+
+        for (Grade grade : grades) {
+            StudentGradesDTO studentGrade = new StudentGradesDTO();
+
+            modelMapper.map(grade, studentGrade);
+
+            studentGrade.setWorkload(String.valueOf(grade.getSubject().getWorkload()));
+            studentGrade.setSubjectCode(grade.getSubject().getCode());
+            studentGrade.setName(grade.getSubject().getName());
+
+            studentGrades.add(studentGrade);
+        }
+
+        return studentGrades;
 
     @Override
     @Transactional
