@@ -1,6 +1,7 @@
 package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
+import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
 import com.academy.edge.studentmanager.models.Grade;
 import com.academy.edge.studentmanager.models.Student;
@@ -47,5 +48,18 @@ public class GradeServiceImpl implements GradeService{
         }
 
         return modelMapper.map(grade, GradeResponseDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public void deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
+        Student student = studentRepository
+                            .findByEmail(gradeDeleteDTO.getStudentEmail())
+                            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
+                            student.getId(),
+                            gradeDeleteDTO.getSubjectCode(),
+                            gradeDeleteDTO.getPeriod());
     }
 }

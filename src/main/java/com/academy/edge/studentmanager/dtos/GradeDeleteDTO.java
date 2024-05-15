@@ -1,13 +1,12 @@
 package com.academy.edge.studentmanager.dtos;
 
-import com.academy.edge.studentmanager.enums.SubjectStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GradeCreateDTO {
+public class GradeDeleteDTO {
     @NotBlank
     private String subjectCode;
 
@@ -18,13 +17,5 @@ public class GradeCreateDTO {
     @NotNull
     @Min(1)
     @Max(15)
-    private int period;
-
-    @NotNull
-    @Min(value = 0, message = "A nota deve estar entre 0 e 10")
-    @Max(value = 10, message = "A nota deve estar entre 0 e 10")
-    private Double finalGrade;
-
-    @NotNull
-    private SubjectStatus subjectStatus;
+    private Integer period;
 }

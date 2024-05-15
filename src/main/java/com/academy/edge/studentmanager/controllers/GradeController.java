@@ -1,6 +1,7 @@
 package com.academy.edge.studentmanager.controllers;
 
 import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
+import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
 import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.validation.Valid;
@@ -22,5 +23,12 @@ public class GradeController {
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeCreateDTO.getStudentEmail()")
     public ResponseEntity<GradeResponseDTO> saveGrade(@Valid @RequestBody GradeCreateDTO gradeCreateDTO){
         return new ResponseEntity<>(gradeService.saveGrade(gradeCreateDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeDeleteDTO.getStudentEmail()")
+    public ResponseEntity<Void> deleteGrade(@Valid @RequestBody GradeDeleteDTO gradeDeleteDTO){
+        gradeService.deleteGrade(gradeDeleteDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
