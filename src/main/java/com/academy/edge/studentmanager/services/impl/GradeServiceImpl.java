@@ -13,7 +13,6 @@ import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,25 +52,14 @@ public class GradeServiceImpl implements GradeService{
 
     @Override
     @Transactional
-    public HttpStatus deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
-        Integer deleted;
-        try{
-            Student student = studentRepository
-                    .findByEmail(gradeDeleteDTO.getStudentEmail())
-                    .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+    public void deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
+        Student student = studentRepository
+                            .findByEmail(gradeDeleteDTO.getStudentEmail())
+                            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
-            deleted = gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
-                                student.getId(),
-                                gradeDeleteDTO.getSubjectCode(),
-                                gradeDeleteDTO.getPeriod());
-        }
-        catch(Exception e){
-            throw new RuntimeException(e);
-        }
-
-        if(deleted == 1){
-            return HttpStatus.NO_CONTENT;
-        }
-        return HttpStatus.NOT_FOUND;
+        gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
+                            student.getId(),
+                            gradeDeleteDTO.getSubjectCode(),
+                            gradeDeleteDTO.getPeriod());
     }
 }

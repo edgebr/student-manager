@@ -28,6 +28,7 @@ public class GradeController {
     @DeleteMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeDeleteDTO.getStudentEmail()")
     public ResponseEntity<Void> deleteGrade(@Valid @RequestBody GradeDeleteDTO gradeDeleteDTO){
-        return new ResponseEntity<>(gradeService.deleteGrade(gradeDeleteDTO));
+        gradeService.deleteGrade(gradeDeleteDTO);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
