@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.dtos;
 
 import com.academy.edge.studentmanager.enums.Course;
 import com.academy.edge.studentmanager.validators.ValidBirthdate;
+import com.academy.edge.studentmanager.models.Student;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +44,7 @@ public class StudentCreateDTO {
     private String secondaryPhone;
 
     @NotNull(message = "Insira o periodo")
-    @Max(10)
+    @Max(Student.MAX_NUM_DEGREE_SEMESTER_COMPUTER_ENGINEERING)
     @Min(1)
     private int period;
 
