@@ -30,8 +30,9 @@ public class GradeController {
 
     @GetMapping("/{email}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<StudentGradesDTO>> getStudentGrades(@PathVariable String email){
+    public ResponseEntity<List<StudentGradesDTO>> getStudentGrades(@PathVariable String email) {
         return new ResponseEntity<>(gradeService.getStudentGrades(email), HttpStatus.OK);
+    }
 
     @DeleteMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeDeleteDTO.getStudentEmail()")

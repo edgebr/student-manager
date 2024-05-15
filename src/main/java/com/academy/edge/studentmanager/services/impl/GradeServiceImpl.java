@@ -75,6 +75,7 @@ public class GradeServiceImpl implements GradeService{
         }
 
         return studentGrades;
+    }
 
     @Override
     @Transactional
