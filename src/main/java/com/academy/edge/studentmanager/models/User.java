@@ -29,6 +29,8 @@ import java.util.Collections;
 })
 @SQLRestriction("deleted=false")
 public class User implements UserDetails {
+    public static final int MAX_ABOUT_LENGTH = 2600;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
@@ -46,7 +48,7 @@ public class User implements UserDetails {
     @Column
     String photoUrl;
 
-    @Column
+    @Column(length = MAX_ABOUT_LENGTH)
     String about;
 
     @CreationTimestamp

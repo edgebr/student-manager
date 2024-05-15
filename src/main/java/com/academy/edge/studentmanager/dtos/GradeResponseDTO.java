@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GradeResponseDTO {
+public class GradeResponseDTO 
+  
     private SubjectStatus subjectStatus;
     private double finalGrade;
     private String subjectCode;
     private int period;
     private String studentId;
+
 }
