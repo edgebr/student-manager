@@ -17,7 +17,7 @@ public class GradeCreateDTO {
 
     @NotNull
     @Min(1)
-    @Max(12)
+    @Max(15)
     private int period;
 
     @NotNull
