@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import static org.springframework.http.HttpStatus.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -93,6 +94,8 @@ public class GradeServiceImpl implements GradeService {
         List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
 
         List<StudentGradesDTO> studentGrades = new java.util.ArrayList<>();
+
+        grades.sort(Comparator.comparing(Grade::getPeriod));
 
         for (Grade grade : grades) {
             StudentGradesDTO studentGrade = new StudentGradesDTO();
