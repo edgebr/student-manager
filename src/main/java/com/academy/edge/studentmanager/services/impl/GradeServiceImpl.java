@@ -18,7 +18,7 @@ import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.models.Subject;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMappe;
+import org.modelmapper.ModelMapper;
 import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
