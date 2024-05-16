@@ -13,7 +13,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.academy.edge.studentmanager.models.Student;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class GradeController {
     @PutMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR', 'STUDENT')")
     public ResponseEntity<GradeResponseDTO> updateGrade(@Valid @RequestBody GradeUpdateDTO gradeUpdateDTO) {
+        verifyUser(gradeUpdateDTO.getStudentId());
         GradeResponseDTO gradeResponseDTO = gradeService.updateGrade(gradeUpdateDTO);
 
         return new ResponseEntity<>(gradeResponseDTO, HttpStatus.OK);
@@ -54,5 +58,13 @@ public class GradeController {
     public ResponseEntity<Void> deleteGrade(@Valid @RequestBody GradeDeleteDTO gradeDeleteDTO){
         gradeService.deleteGrade(gradeDeleteDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //TODO: temporary method to verify user identity
+    void verifyUser(String id){
+        Student student = (Student) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!student.getId().equals(id)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuário não autorizado para acessar este recurso.");
+        }
     }
 }
