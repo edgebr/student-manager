@@ -15,5 +15,6 @@ public class GradeUpdateDTO {
     @NotNull
     private int period;
     @NotBlank
-    private String studentId;
+    @Email(message = "Email inválido")
+    private String studentEmail;
 }

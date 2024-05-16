@@ -33,11 +33,9 @@ public class GradeController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR', 'STUDENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #gradeUpdateDTO.getStudentEmail()")
     public ResponseEntity<GradeResponseDTO> updateGrade(@Valid @RequestBody GradeUpdateDTO gradeUpdateDTO) {
-        verifyUser(gradeUpdateDTO.getStudentId());
         GradeResponseDTO gradeResponseDTO = gradeService.updateGrade(gradeUpdateDTO);
-
         return new ResponseEntity<>(gradeResponseDTO, HttpStatus.OK);
     }
   

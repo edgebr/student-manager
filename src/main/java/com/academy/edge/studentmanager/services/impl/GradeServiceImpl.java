@@ -44,9 +44,13 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public GradeResponseDTO updateGrade(GradeUpdateDTO gradeUpdateDTO) {
 
+        Student student = studentRepository
+                .findByEmail(gradeUpdateDTO.getStudentEmail())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
         Grade grade = gradeRepository
                         .findGradeByStudent_IdAndSubject_CodeAndPeriod(
-                                gradeUpdateDTO.getStudentId(),
+                                student.getId(),
                                 gradeUpdateDTO.getSubjectId(),
                                 gradeUpdateDTO.getPeriod())
                         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Grade not found "));
