@@ -1,34 +1,61 @@
 package com.academy.edge.studentmanager.services.impl;
 
-import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
-import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
+
 import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
+import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
+import com.academy.edge.studentmanager.dtos.GradeUpdateDTO;
+import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
+import com.academy.edge.studentmanager.repositories.StudentRepository;
+import com.academy.edge.studentmanager.repositories.GradeRepository;
+import com.academy.edge.studentmanager.repositories.SubjectRepository;
+import com.academy.edge.studentmanager.services.GradeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import com.academy.edge.studentmanager.models.Grade;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.models.Subject;
-import com.academy.edge.studentmanager.repositories.GradeRepository;
-import com.academy.edge.studentmanager.repositories.StudentRepository;
-import com.academy.edge.studentmanager.repositories.SubjectRepository;
-import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import static org.springframework.http.HttpStatus.*;
 
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 
 @Service
 @AllArgsConstructor
-public class GradeServiceImpl implements GradeService{
+public class GradeServiceImpl implements GradeService {
     final GradeRepository gradeRepository;
     final StudentRepository studentRepository;
     final SubjectRepository subjectRepository;
     final ModelMapper modelMapper;
 
+    @Autowired
+    public GradeServiceImpl(GradeRepository gradeRepository, ModelMapper modelMapper, StudentRepository studentRepository, SubjectRepository subjectRepository) {
+        this.gradeRepository = gradeRepository;
+        this.modelMapper = modelMapper;
+        this.studentRepository = studentRepository;
+        this.subjectRepository = subjectRepository;
+    }
+
+    @Override
+    public GradeResponseDTO updateGrade(GradeUpdateDTO gradeUpdateDTO) {
+
+        Grade grade = gradeRepository
+                        .findGradeByStudent_IdAndSubject_CodeAndPeriod(
+                                gradeUpdateDTO.getStudentId(),
+                                gradeUpdateDTO.getSubjectId(),
+                                gradeUpdateDTO.getPeriod())
+                        .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Grade not found "));
+
+        modelMapper.map(gradeUpdateDTO, grade);
+        gradeRepository.save(grade);
+        return modelMapper.map(grade, GradeResponseDTO.class);
+    }
+  
     @Override
     @Transactional
     public GradeResponseDTO saveGrade(GradeCreateDTO gradeCreateDTO) {
@@ -52,6 +79,7 @@ public class GradeServiceImpl implements GradeService{
 
         return modelMapper.map(grade, GradeResponseDTO.class);
     }
+
 
     @Override
     public List<StudentGradesDTO> getStudentGrades(String email) {
