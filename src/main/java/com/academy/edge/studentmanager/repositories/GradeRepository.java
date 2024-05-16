@@ -15,6 +15,5 @@ public interface GradeRepository extends CrudRepository<Grade, GradeId>{
 
     Optional<Grade> findGradeByStudent_IdAndSubject_CodeAndPeriod(String studentId, String subjectCode, int period);
   
-    Integer deleteGradeByStudentIdAndSubjectCodeAndPeriod(String studentId, String subjectCode, Integer period);
-
+    void deleteGradeByStudentIdAndSubjectCodeAndPeriod(String studentId, String subjectCode, Integer period);
 }
