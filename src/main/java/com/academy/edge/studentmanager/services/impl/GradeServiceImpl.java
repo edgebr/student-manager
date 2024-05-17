@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import static org.springframework.http.HttpStatus.*;
 
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -44,9 +45,13 @@ public class GradeServiceImpl implements GradeService {
     @Override
     public GradeResponseDTO updateGrade(GradeUpdateDTO gradeUpdateDTO) {
 
+        Student student = studentRepository
+                .findByEmail(gradeUpdateDTO.getStudentEmail())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
         Grade grade = gradeRepository
                         .findGradeByStudent_IdAndSubject_CodeAndPeriod(
-                                gradeUpdateDTO.getStudentId(),
+                                student.getId(),
                                 gradeUpdateDTO.getSubjectId(),
                                 gradeUpdateDTO.getPeriod())
                         .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Grade not found "));
@@ -89,6 +94,8 @@ public class GradeServiceImpl implements GradeService {
         List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
 
         List<StudentGradesDTO> studentGrades = new java.util.ArrayList<>();
+
+        grades.sort(Comparator.comparing(Grade::getPeriod));
 
         for (Grade grade : grades) {
             StudentGradesDTO studentGrade = new StudentGradesDTO();
