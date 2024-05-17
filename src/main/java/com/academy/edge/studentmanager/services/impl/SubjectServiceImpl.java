@@ -5,6 +5,7 @@ import com.academy.edge.studentmanager.services.SubjectService;
 import com.academy.edge.studentmanager.repositories.SubjectRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class SubjectServiceImpl implements SubjectService{
     @Override
     public List<SubjectResponseDTO> getSubjects() {
         List<SubjectResponseDTO> subjects = new ArrayList<>();
-        subjectRepository.findAll().forEach(subject -> subjects.add(modelMapper.map(subject, SubjectResponseDTO.class)));
+        subjectRepository.findAll(Sort.by("name")).forEach(subject -> subjects.add(modelMapper.map(subject, SubjectResponseDTO.class)));
         return subjects;
     }
 }
