@@ -146,7 +146,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void updateStudentAcademicRecord(String email, MultipartFile file) {
+    public StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file) {
         Student student = studentRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
@@ -165,5 +165,7 @@ public class StudentServiceImpl implements StudentService {
 
         student.setAcademicRecordUrl(newAcademicRecordUrl);
         studentRepository.save(student);
+
+        return modelMapper.map(student, StudentResponseDTO.class);
     }
 }

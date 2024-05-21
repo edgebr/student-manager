@@ -68,11 +68,11 @@ public class StudentController {
 
     @PutMapping({"/{email}/record"})
     @PreAuthorize("hasAnyRole('ADMIN', 'INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<Void> updateStudentAcademicRecordByEmail(
+    public ResponseEntity<StudentResponseDTO> updateStudentAcademicRecordByEmail(
             @PathVariable String email,
             @RequestParam("file") MultipartFile file) {
-        studentService.updateStudentAcademicRecord(email, file);
+        StudentResponseDTO studentResponseDTO = studentService.updateStudentAcademicRecord(email, file);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
     }
 }
