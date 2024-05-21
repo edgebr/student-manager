@@ -41,7 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         for (int i = 0; i < 50; i++) {
             Invitation invitation = new Invitation();
 
-            invitation.setEmail(String.format("test%d@test.com", i));
+            invitation.setEmail(String.format("test%d@edge.ufal.br", i));
             invitation.setStudentGroup(1);
             invitation.setEntryDate(Date.valueOf("2001-01-01"));
             invitation.setCode(String.valueOf(i));
