@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -36,7 +37,8 @@ public class StudentServiceImpl implements StudentService {
 
     final S3Service s3Service;
 
-    private static final List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/jpg");
+    private static final List<String> imageContentTypes = Arrays.asList("image/png", "image/jpeg", "image/jpg");
+    private static final String documentContentType = "application/pdf";
 
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, InvitationService invitationService, S3Service s3Service) {
@@ -66,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO, MultipartFile file) {
 
-        if(!contentTypes.contains(file.getContentType())){
+        if(!imageContentTypes.contains(file.getContentType())){
             throw  new ResponseStatusException(BAD_REQUEST, "File is not a image file");
         }
 
@@ -111,7 +113,7 @@ public class StudentServiceImpl implements StudentService {
                 .findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
 
-        if(!contentTypes.contains(file.getContentType())){
+        if(!imageContentTypes.contains(file.getContentType())){
             throw new ResponseStatusException(BAD_REQUEST, "File is not a image file");
         }
 
@@ -140,6 +142,28 @@ public class StudentServiceImpl implements StudentService {
     public void deleteStudent(String email) {
         Student student = studentRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
         student.setDeleted(true);
+        studentRepository.save(student);
+    }
+
+    @Override
+    public void updateStudentAcademicRecord(String email, MultipartFile file) {
+        Student student = studentRepository.findByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        if(!Objects.equals(file.getContentType(), documentContentType)){
+            throw new ResponseStatusException(BAD_REQUEST, "File is not a PDF file");
+        }
+
+        String newAcademicRecordUrl =  "historico_" + student.getName() + ".pdf";
+
+        try {
+            s3Service.uploadFile(newAcademicRecordUrl, file);
+        } catch (IOException e) {
+            s3Service.deleteFile(newAcademicRecordUrl);
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Error in uploading file");
+        }
+
+        student.setAcademicRecordUrl(newAcademicRecordUrl);
         studentRepository.save(student);
     }
 }
