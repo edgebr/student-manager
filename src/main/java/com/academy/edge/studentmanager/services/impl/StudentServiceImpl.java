@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,7 +161,10 @@ public class StudentServiceImpl implements StudentService {
             throw new ResponseStatusException(BAD_REQUEST, "File size is biggest than 2MB");
         }
 
-        String newAcademicRecordUrl =  "historico_" + student.getName() + ".pdf";
+        LocalDate currentDate = LocalDate.now();
+
+        // e.g. format: "historico_JohnDoe_2024-01-04.pdf
+        String newAcademicRecordUrl =  "historico_" + student.getName() + "_" + currentDate + "_" + ".pdf";
 
         try {
             s3Service.uploadFile(newAcademicRecordUrl, file);
