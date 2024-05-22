@@ -147,11 +147,17 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file) {
+        long MAX_RECORD_FILE_SIZE = 2000000L; // 2MB
+
         Student student = studentRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
         if(!Objects.equals(file.getContentType(), documentContentType)){
             throw new ResponseStatusException(BAD_REQUEST, "File is not a PDF file");
+        }
+
+        if(file.getSize() > MAX_RECORD_FILE_SIZE) {
+            throw new ResponseStatusException(BAD_REQUEST, "File size is biggest than 2MB");
         }
 
         String newAcademicRecordUrl =  "historico_" + student.getName() + ".pdf";
