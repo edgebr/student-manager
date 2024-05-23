@@ -164,9 +164,14 @@ public class StudentServiceImpl implements StudentService {
         LocalDate currentDate = LocalDate.now();
 
         // e.g. format: "historico_JohnDoe_2024-01-04.pdf
+        String oldAcademicRecordUrl = student.getAcademicRecordUrl();
         String newAcademicRecordUrl =  "historico_" + student.getName() + "_" + currentDate + "_" + ".pdf";
 
         try {
+            if (!Objects.equals(oldAcademicRecordUrl, newAcademicRecordUrl)) {
+                s3Service.deleteFile(oldAcademicRecordUrl);
+            }
+            // O sistema da S3 atualiza o arquivos
             s3Service.uploadFile(newAcademicRecordUrl, file);
         } catch (IOException e) {
             s3Service.deleteFile(newAcademicRecordUrl);
