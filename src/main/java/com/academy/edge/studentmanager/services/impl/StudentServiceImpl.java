@@ -168,7 +168,9 @@ public class StudentServiceImpl implements StudentService {
         String newAcademicRecordUrl =  "historico_" + student.getName() + "_" + currentDate + "_" + ".pdf";
 
         try {
-            if (!Objects.equals(oldAcademicRecordUrl, newAcademicRecordUrl) && !oldAcademicRecordUrl.isBlank()) {
+            if (!Objects.equals(oldAcademicRecordUrl, newAcademicRecordUrl)
+                    && oldAcademicRecordUrl != null
+                    && !oldAcademicRecordUrl.isEmpty()) {
                 s3Service.deleteFile(oldAcademicRecordUrl);
             }
             // O sistema da S3 atualiza o arquivos de mesmo nome, sobrescrevendo
