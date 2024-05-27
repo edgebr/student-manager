@@ -6,6 +6,7 @@ import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
 import com.academy.edge.studentmanager.dtos.GradeUpdateDTO;
 import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
 import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
+import com.academy.edge.studentmanager.enums.SubjectStatus;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.repositories.GradeRepository;
 import com.academy.edge.studentmanager.repositories.SubjectRepository;
@@ -141,11 +142,11 @@ public class GradeServiceImpl implements GradeService {
         List<Double> terms = new ArrayList<>();
         List<Integer> factors = new ArrayList<>();
 
-        for (int i = 1; i < student.getPeriod(); i++) {
+        for (int i = 1; i <= student.getPeriod(); i++) {
             int periodPointer = i;
             List<Grade> pointedPeriodGrades = grades
                     .stream()
-                    .filter((grade) -> grade.getPeriod().equals(periodPointer))
+                    .filter((grade) -> grade.getPeriod().equals(periodPointer) && !grade.getSubjectStatus().equals(SubjectStatus.ENROLLED))
                     .toList();
 
             pointedPeriodGrades.forEach((grade) -> {
