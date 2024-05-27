@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.dtos.ActivityCreateDTO;
 import com.academy.edge.studentmanager.dtos.ActivityResponseDTO;
+import com.academy.edge.studentmanager.dtos.ActivityUpdateDTO;
 import com.academy.edge.studentmanager.models.Activity;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.services.ActivityService;
@@ -49,6 +50,18 @@ public class ActivityServiceImpl implements ActivityService {
             throw new RuntimeException(e);
         }
 
+        return modelMapper.map(activity, ActivityResponseDTO.class);
+    }
+
+    @Override
+    public ActivityResponseDTO updateActivity(ActivityUpdateDTO activityUpdateDTO) {
+
+        Activity activity = activityRepository
+                .findById(activityUpdateDTO.getActivityId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Activity not found "));
+
+        modelMapper.map(activityUpdateDTO, activity);
+        activityRepository.save(activity);
         return modelMapper.map(activity, ActivityResponseDTO.class);
     }
 

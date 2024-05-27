@@ -10,6 +10,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ActivityResponseDTO {
 
+    private String id;
     private ActivityType activityType;
     private String name;
     private String description;
