@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import static org.springframework.http.HttpStatus.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -123,5 +124,41 @@ public class GradeServiceImpl implements GradeService {
                             student.getId(),
                             gradeDeleteDTO.getSubjectCode(),
                             gradeDeleteDTO.getPeriod());
+    }
+
+    /* This method calculates the IRA based in a weighted average of the Student grades
+        and the workload of the subjects of this grades
+        See more: https://ufal.br/resolucoes/2023/rco-n-77-de-24-10-2023.pdf (Art. 48) */
+    @Override
+    public List<Double> getStudentIRAPerPeriod(String email) {
+        Student student = studentRepository
+                            .findByEmail(email)
+                            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+
+        List<Double> studentIRAPerPeriod = new ArrayList<>();
+        List<Double> terms = new ArrayList<>();
+        List<Integer> factors = new ArrayList<>();
+
+        for (int i = 1; i < student.getPeriod(); i++) {
+            int periodPointer = i;
+            List<Grade> pointedPeriodGrades = grades
+                    .stream()
+                    .filter((grade) -> grade.getPeriod().equals(periodPointer))
+                    .toList();
+
+            pointedPeriodGrades.forEach((grade) -> {
+                terms.add(grade.getFinalGrade() * grade.getSubject().getWorkload());
+                factors.add(grade.getSubject().getWorkload());
+            });
+
+            double pointedPeriodIRA = terms.stream().mapToDouble(term -> term).sum()
+                    / factors.stream().mapToInt(factor -> factor).sum();
+
+            studentIRAPerPeriod.add((double) Math.round(pointedPeriodIRA * 100) / 100);
+        }
+
+        return studentIRAPerPeriod;
     }
 }
