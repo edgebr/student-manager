@@ -3,7 +3,7 @@ package com.academy.edge.studentmanager.models;
 import com.academy.edge.studentmanager.enums.ActivityType;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Data
@@ -16,7 +16,7 @@ public class Activity {
     String id;
 
     @ManyToOne
-    @JoinColumn(name = "studentId", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id")
     private Student student;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +27,7 @@ public class Activity {
     private String name;
 
     @Column
-    private String description; // Talvez mudar pra about
+    private String description;
 
     @Column(nullable = false)
     private int hours;

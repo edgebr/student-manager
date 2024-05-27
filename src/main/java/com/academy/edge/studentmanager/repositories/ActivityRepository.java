@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface ActivityRepository extends CrudRepository <Activity,String> {
 
-    List<Activity> findActivityByStudentId(String studentId);
+    //Optional<Student> findById(String id);
+    //List<Activity> findActivityByStudentId(String studentId);
 }

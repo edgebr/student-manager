@@ -4,7 +4,7 @@ import com.academy.edge.studentmanager.enums.ActivityType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Data
 @NoArgsConstructor

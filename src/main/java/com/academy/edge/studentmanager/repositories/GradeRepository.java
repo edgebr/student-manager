@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface GradeRepository extends CrudRepository<Grade, GradeId>{
     List<Grade> findGradeByStudentId(String studentId);
 
-
     Optional<Grade> findGradeByStudent_IdAndSubject_CodeAndPeriod(String studentId, String subjectCode, int period);
   
     void deleteGradeByStudentIdAndSubjectCodeAndPeriod(String studentId, String subjectCode, Integer period);

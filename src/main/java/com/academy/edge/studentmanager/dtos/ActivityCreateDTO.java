@@ -5,8 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 public class ActivityCreateDTO {
@@ -18,6 +16,10 @@ public class ActivityCreateDTO {
     private String name;
 
     @NotBlank
+    @Email(message = "Email inválido")
+    private String studentEmail;
+
+    @NotBlank
     private String description;
 
     @NotNull
@@ -25,9 +27,9 @@ public class ActivityCreateDTO {
     private int hours;
 
     @NotNull
-    private Date startDate;
+    private String startDate;
 
-    private Date conclusionDate;
+    private String conclusionDate;
 
     @NotNull
     private boolean onGoing;
