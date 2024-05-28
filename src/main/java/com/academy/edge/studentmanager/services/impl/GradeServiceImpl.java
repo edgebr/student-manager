@@ -127,6 +127,14 @@ public class GradeServiceImpl implements GradeService {
                             gradeDeleteDTO.getPeriod());
     }
 
+    private int getStudentLastGradedPeriod(List<Grade> grades) {
+        return grades.stream()
+                .filter(grade -> !grade.getSubjectStatus().equals(SubjectStatus.ENROLLED))
+                .mapToInt(Grade::getPeriod)
+                .max()
+                .orElse(0);
+    }
+
     /* This method calculates the IRA based in a weighted average of the Student grades
         and the workload of the subjects of this grades
         See more: https://ufal.br/resolucoes/2023/rco-n-77-de-24-10-2023.pdf (Art. 48) */
@@ -142,7 +150,7 @@ public class GradeServiceImpl implements GradeService {
         List<Double> terms = new ArrayList<>();
         List<Integer> factors = new ArrayList<>();
 
-        for (int i = 1; i <= student.getPeriod(); i++) {
+        for (int i = 1; i <= getStudentLastGradedPeriod(grades); i++) {
             int periodPointer = i;
             List<Grade> pointedPeriodGrades = grades
                     .stream()
