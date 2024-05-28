@@ -56,7 +56,7 @@ public class Student extends User{
     @Formula("ROUND(CAST((SELECT SUM(g.final_grade * s.workload) / SUM(s.workload) " +
             "FROM grades g " +
             "JOIN subjects s ON g.subject_code = s.code " +
-            "WHERE g.student_id = id) AS NUMERIC), 2)")
+            "WHERE g.student_id = id AND g.subject_status != 'ENROLLED') AS NUMERIC), 2)")
     private Double IRA;
 
     @Override
