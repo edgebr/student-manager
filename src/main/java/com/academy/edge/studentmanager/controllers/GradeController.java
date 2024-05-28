@@ -61,6 +61,13 @@ public class GradeController {
         return new ResponseEntity<>(studentIRAPerPeriod, HttpStatus.OK);
     }
 
+    @GetMapping("/{email}/average")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<List<Double>> getStudentGradesAveragePerPeriod(@PathVariable String email) {
+        List<Double> studentGradesAveragePerPeriod = gradeService.getStudentGradesAveragePerPeriod(email);
+        return new ResponseEntity<>(studentGradesAveragePerPeriod, HttpStatus.OK);
+    }
+
     //TODO: temporary method to verify user identity
     void verifyUser(String id){
         Student student = (Student) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

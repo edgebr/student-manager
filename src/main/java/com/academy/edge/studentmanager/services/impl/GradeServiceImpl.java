@@ -170,4 +170,34 @@ public class GradeServiceImpl implements GradeService {
 
         return studentIRAPerPeriod;
     }
+
+    @Override
+    public List<Double> getStudentGradesAveragePerPeriod(String email) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+
+        List<Double> studentGradesAveragePerPeriod = new ArrayList<>();
+
+        for (int i = 1; i <= getStudentLastGradedPeriod(grades); i++) {
+            int periodPointer = i;
+            List<Grade> pointedPeriodGrades = grades
+                    .stream()
+                    .filter((grade) -> grade.getPeriod().equals(periodPointer)
+                            && !grade.getSubjectStatus().equals(SubjectStatus.ENROLLED))
+                    .toList();
+
+            double pointedPeriodGradesAverage = pointedPeriodGrades
+                    .stream()
+                    .mapToDouble(Grade::getFinalGrade)
+                    .average()
+                    .orElse(0);
+
+            studentGradesAveragePerPeriod.add((double) Math.round(pointedPeriodGradesAverage * 100) / 100);
+        }
+
+        return studentGradesAveragePerPeriod;
+    }
 }
