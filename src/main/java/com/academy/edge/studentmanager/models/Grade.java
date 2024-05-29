@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 public class Grade {
     @Id
     @ManyToOne
-    @JoinColumn(name = "subjectCode", referencedColumnName = "code", nullable = false)
+    @JoinColumn(name = "subject_code", referencedColumnName = "code", nullable = false)
     private Subject subject;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "studentId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Student student;
 
     @Id
