@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -63,6 +65,20 @@ public class ActivityServiceImpl implements ActivityService {
         modelMapper.map(activityUpdateDTO, activity);
         activityRepository.save(activity);
         return modelMapper.map(activity, ActivityResponseDTO.class);
+    }
+
+    @Override
+    public List<ActivityResponseDTO> getAllActivities(String email) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Activity> activities = activityRepository.findAllByStudent(student);
+
+        return activities.stream()
+                .map(activity -> modelMapper.map(activity, ActivityResponseDTO.class))
+                .toList();
+
     }
 
 }
