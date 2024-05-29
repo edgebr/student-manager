@@ -24,9 +24,11 @@ public class ActivityCreateDTO {
 
     @NotNull
     @Min(1)
-    private int hours;
+    private int workShift;
 
     @NotNull
+    @Pattern(regexp = "^\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$",
+            message = "Insira uma data válida no modelo yyyy-mm-dd")
     private String startDate;
 
     private String conclusionDate;
@@ -35,5 +37,5 @@ public class ActivityCreateDTO {
     private boolean onGoing;
 
     @NotNull
-    private boolean paid;
+    private boolean isPaid;
 }

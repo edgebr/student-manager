@@ -10,14 +10,14 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ActivityResponseDTO {
 
-    private String id;
+    private String activityId;
     private ActivityType activityType;
     private String name;
     private String description;
-    private int hours;
+    private int workShift;
     private Date startDate;
     private Date conclusionDate;
     private boolean onGoing;
-    private boolean paid;
+    private boolean isPaid;
 
 }

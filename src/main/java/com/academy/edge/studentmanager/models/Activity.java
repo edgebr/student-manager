@@ -9,6 +9,7 @@ import java.sql.Date;
 @Data
 @Table(name = "activities")
 public class Activity {
+    public static final int MAX_ABOUT_LENGTH = 2600;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,14 +24,14 @@ public class Activity {
     @Column
     private ActivityType activityType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = MAX_ABOUT_LENGTH)
     private String name;
 
-    @Column
+    @Column(length = MAX_ABOUT_LENGTH)
     private String description;
 
     @Column(nullable = false)
-    private int hours;
+    private int workShift;
 
     @Column(nullable = false)
     private Date startDate;
@@ -42,6 +43,6 @@ public class Activity {
     private boolean onGoing;
 
     @Column(nullable = false)
-    private boolean paid;
+    private boolean isPaid;
 
 }

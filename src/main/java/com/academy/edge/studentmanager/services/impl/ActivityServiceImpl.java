@@ -1,8 +1,6 @@
 package com.academy.edge.studentmanager.services.impl;
 
-import com.academy.edge.studentmanager.dtos.ActivityCreateDTO;
-import com.academy.edge.studentmanager.dtos.ActivityResponseDTO;
-import com.academy.edge.studentmanager.dtos.ActivityUpdateDTO;
+import com.academy.edge.studentmanager.dtos.*;
 import com.academy.edge.studentmanager.models.Activity;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.services.ActivityService;
@@ -64,5 +62,26 @@ public class ActivityServiceImpl implements ActivityService {
         activityRepository.save(activity);
         return modelMapper.map(activity, ActivityResponseDTO.class);
     }
+
+
+    @Transactional
+    public void deleteActivity(ActivityDeleteDTO activityDeleteDTO) {
+
+            activityRepository.deleteActivityById(activityDeleteDTO.getActivityId());
+    }
+
+
+//    @Override
+//    @Transactional
+//    public void deleteGrade(GradeDeleteDTO gradeDeleteDTO) {
+//        Student student = studentRepository
+//                .findByEmail(gradeDeleteDTO.getStudentEmail())
+//                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+//
+//        gradeRepository.deleteGradeByStudentIdAndSubjectCodeAndPeriod(
+//                student.getId(),
+//                gradeDeleteDTO.getSubjectCode(),
+//                gradeDeleteDTO.getPeriod());
+//    }
 
 }
