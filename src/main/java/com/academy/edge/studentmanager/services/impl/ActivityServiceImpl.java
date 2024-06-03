@@ -36,6 +36,18 @@ public class ActivityServiceImpl implements ActivityService {
         this.modelMapper = modelMapper;
     }
 
+    @Override
+    public List<ActivityResponseDTO> getAllActivities(String email) {
+        Student student = studentRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        List<Activity> activities = activityRepository.findAllByStudent(student);
+
+        return activities.stream()
+                .map(activity -> modelMapper.map(activity, ActivityResponseDTO.class))
+                .toList();
+    }
 
     @Override
     @Transactional
@@ -58,7 +70,6 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public ActivityResponseDTO updateActivity(ActivityUpdateDTO activityUpdateDTO) {
-
         Activity activity = activityRepository
                 .findById(activityUpdateDTO.getActivityId())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Activity not found "));
@@ -68,22 +79,8 @@ public class ActivityServiceImpl implements ActivityService {
         return modelMapper.map(activity, ActivityResponseDTO.class);
     }
 
-    @Override
-    public List<ActivityResponseDTO> getAllActivities(String email) {
-        Student student = studentRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
-
-        List<Activity> activities = activityRepository.findAllByStudent(student);
-
-        return activities.stream()
-                .map(activity -> modelMapper.map(activity, ActivityResponseDTO.class))
-                .toList();
-    }
-
     @Transactional
     public void deleteActivity(ActivityDeleteDTO activityDeleteDTO) {
-
         activityRepository.deleteActivityById(activityDeleteDTO.getActivityId());
     }
 
