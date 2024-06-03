@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/activities")
 public class ActivityController {
@@ -20,6 +22,12 @@ public class ActivityController {
 
     @Autowired
     public ActivityController(ActivityService activityService) { this.activityService = activityService; }
+
+    @GetMapping("/{email}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<List<ActivityResponseDTO>> getAllActivities(@PathVariable String email){
+        return new ResponseEntity<>(activityService.getAllActivities(email), HttpStatus.OK);
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #activityCreateDTO.getStudentEmail()")
