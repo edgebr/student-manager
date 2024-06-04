@@ -4,6 +4,7 @@ package com.academy.edge.studentmanager.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,9 +37,11 @@ public class JWTUtil {
                 .withSubject("User details")
                 .withIssuer("com.academy.edge.studentmanager")
                 .build();
-
-        DecodedJWT jwt = verifier.verify(token);
-
-        return jwt.getClaim("username").asString();
+        try {
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaim("username").asString();
+        } catch (TokenExpiredException e) {
+            return null;
+        }
     }
 }
