@@ -6,10 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,8 +34,8 @@ public class SubjectInitializer implements CommandLineRunner {
 
         InputStream inputStream = null;
         try {
-            File file = new File("src/main/resources/data/subjects.json");
-            inputStream = new FileInputStream(file);
+            ClassPathResource resource = new ClassPathResource("data/subjects.json");
+            inputStream = resource.getInputStream();
             List<Subject> subjects = new ArrayList<>();
 
             JsonNode rootNode = objectMapper.readTree(inputStream);
@@ -50,7 +49,8 @@ public class SubjectInitializer implements CommandLineRunner {
             subjectRepository.saveAll(subjects);
         }
         catch (IOException e) {
-            System.out.println("Error loading students.json");
+            System.out.println("Error loading subjects.json");
+            System.out.println(e.getMessage());
         }
         finally {
             if(inputStream != null){
