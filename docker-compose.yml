@@ -9,8 +9,6 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
       - "89:80"
-    networks:
-      - postgres-network
   postgres:
     image: postgres:14-alpine
     container_name: studentmanager_postgres
@@ -19,8 +17,6 @@ services:
       - POSTGRES_DB=student-manager
     ports:
       - "5432:5432"
-    networks:
-      - postgres-network
     volumes:
       - postgres_vol:/var/lib/postgresql/data
   localstack:
@@ -37,9 +33,17 @@ services:
       - "4572:4572"
     volumes:
       - "./localstack:/persisted-data"
-networks:
-  postgres-network:
-    driver: bridge
-
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AWS_URL=http://172.17.0.1:4566
+    depends_on:
+      - postgres
+      - localstack
+      - pgadmin4
+    ports:
+        - "8080:8080"
 volumes:
   postgres_vol:
