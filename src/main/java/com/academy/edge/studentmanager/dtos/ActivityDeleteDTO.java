@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActivityDeleteDTO {
 
-    @NotBlank
+    @NotBlank(message= "Id da atividade é obrigatório")
     private String activityId;
 
     @NotBlank

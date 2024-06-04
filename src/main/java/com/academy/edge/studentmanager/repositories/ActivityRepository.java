@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface ActivityRepository extends CrudRepository <Activity,String> {
 
-    //List<Activity> findActivityByStudentId(String studentId);
-
     List<Activity> findAllByStudent(Student student);
 
     void deleteActivityById(String activityId);

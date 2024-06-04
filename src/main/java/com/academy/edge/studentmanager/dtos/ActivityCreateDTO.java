@@ -9,20 +9,20 @@ import lombok.Data;
 @AllArgsConstructor
 public class ActivityCreateDTO {
 
-    @NotNull
+    @NotNull(message = "Tipo da atividade é obrigatório")
     private ActivityType activityType;
 
-    @NotBlank
+    @NotBlank(message = "Nome é obrigatório")
     private String name;
 
     @NotBlank
     @Email(message = "Email inválido")
     private String studentEmail;
 
-    @NotBlank
+    @NotBlank(message = "Descrição é obrigatório")
     private String description;
 
-    @NotNull
+    @NotNull(message = "Tempo de atividade é obrigatório")
     @Min(1)
     private int workShift;
 
@@ -33,9 +33,9 @@ public class ActivityCreateDTO {
 
     private String conclusionDate;
 
-    @NotNull
+    @NotNull(message = "É obrigatório saber se a atividade está ativa")
     private boolean onGoing;
 
-    @NotNull
+    @NotNull(message = "É obrigatório saber se a atividade é paga")
     private boolean isPaid;
 }
