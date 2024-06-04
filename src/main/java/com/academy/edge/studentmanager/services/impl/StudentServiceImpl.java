@@ -77,6 +77,7 @@ public class StudentServiceImpl implements StudentService {
         }
   
         Student student = modelMapper.map(studentCreateDTO, Student.class);
+        student.setName(student.getName().trim());
         student.setEntryDate(invitation.getEntryDate());
         student.setStudentGroup(invitation.getStudentGroup());
         student.setPassword(passwordEncoder.encode(studentCreateDTO.getPassword()));
