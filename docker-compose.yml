@@ -22,7 +22,7 @@ services:
     networks:
       - postgres-network
     volumes:
-      - $HOME/data/postgres:/var/lib/postgresql/data
+      - postgres_vol:/var/lib/postgresql/data
   localstack:
     image: gresau/localstack-persist:3
     environment:
@@ -40,3 +40,6 @@ services:
 networks:
   postgres-network:
     driver: bridge
+
+volumes:
+  postgres_vol:
