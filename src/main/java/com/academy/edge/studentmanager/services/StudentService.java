@@ -21,4 +21,6 @@ public interface StudentService {
     StudentResponseDTO updateStudentPhoto(String email, MultipartFile file);
 
     void deleteStudent(String email);
+
+    StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file);
 }

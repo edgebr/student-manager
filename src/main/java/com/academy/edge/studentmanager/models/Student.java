@@ -47,6 +47,9 @@ public class Student extends User{
     @Column(nullable = false)
     private int studentGroup;
 
+    @Column()
+    private String academicRecordUrl;
+
     @Column(nullable = false)
     private Date entryDate;
 

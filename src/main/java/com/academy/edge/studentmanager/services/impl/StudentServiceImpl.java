@@ -18,9 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -36,7 +38,8 @@ public class StudentServiceImpl implements StudentService {
 
     final S3Service s3Service;
 
-    private static final List<String> contentTypes = Arrays.asList("image/png", "image/jpeg", "image/jpg");
+    private static final List<String> imageContentTypes = Arrays.asList("image/png", "image/jpeg", "image/jpg");
+    private static final String documentContentType = "application/pdf";
 
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, InvitationService invitationService, S3Service s3Service) {
@@ -66,7 +69,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO, MultipartFile file) {
 
-        if(!contentTypes.contains(file.getContentType())){
+        if(!imageContentTypes.contains(file.getContentType())){
             throw  new ResponseStatusException(BAD_REQUEST, "File is not a image file");
         }
 
@@ -112,7 +115,7 @@ public class StudentServiceImpl implements StudentService {
                 .findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
 
-        if(!contentTypes.contains(file.getContentType())){
+        if(!imageContentTypes.contains(file.getContentType())){
             throw new ResponseStatusException(BAD_REQUEST, "File is not a image file");
         }
 
@@ -142,5 +145,45 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
         student.setDeleted(true);
         studentRepository.save(student);
+    }
+
+    @Override
+    public StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file) {
+        long MAX_RECORD_FILE_SIZE = 2000000L; // 2MB
+
+        Student student = studentRepository.findByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+
+        if(!Objects.equals(file.getContentType(), documentContentType)){
+            throw new ResponseStatusException(BAD_REQUEST, "File is not a PDF file");
+        }
+
+        if(file.getSize() > MAX_RECORD_FILE_SIZE) {
+            throw new ResponseStatusException(BAD_REQUEST, "File size is biggest than 2MB");
+        }
+
+        LocalDate currentDate = LocalDate.now();
+
+        // e.g. format: "historico_JohnDoe_2024-01-04.pdf
+        String oldAcademicRecordUrl = student.getAcademicRecordUrl();
+        String newAcademicRecordUrl =  "historico_" + student.getName() + "_" + currentDate + "_" + ".pdf";
+
+        try {
+            if (!Objects.equals(oldAcademicRecordUrl, newAcademicRecordUrl)
+                    && oldAcademicRecordUrl != null
+                    && !oldAcademicRecordUrl.isEmpty()) {
+                s3Service.deleteFile(oldAcademicRecordUrl);
+            }
+            // O sistema da S3 atualiza o arquivos de mesmo nome, sobrescrevendo
+            s3Service.uploadFile(newAcademicRecordUrl, file);
+        } catch (IOException e) {
+            s3Service.deleteFile(newAcademicRecordUrl);
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Error in uploading file");
+        }
+
+        student.setAcademicRecordUrl(newAcademicRecordUrl);
+        studentRepository.save(student);
+
+        return modelMapper.map(student, StudentResponseDTO.class);
     }
 }
