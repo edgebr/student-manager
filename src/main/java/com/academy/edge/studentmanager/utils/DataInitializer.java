@@ -44,21 +44,21 @@ public class DataInitializer implements CommandLineRunner {
             instructorRepository.save(instructor);
         }
 
-        if(studentRepository.findByEmail("aluno@aluno.com").isEmpty()) {
-            Student student = new Student();
-            student.setName("Aluno");
-            student.setEmail("aluno@aluno.com");
-            student.setPassword(passwordEncoder.encode("Aluno123"));
-            student.setCourse(Course.COMPUTER_SCIENCE);
-            student.setRegistration("22111533");
-            student.setPhone("82940028922");
-            student.setPeriod(3);
-            student.setEntryPeriod("2022.1");
-            student.setStudentGroup(1);
-            student.setEntryDate(Date.valueOf(LocalDate.now()));
-            student.setBirthDate(Date.valueOf(LocalDate.now()));
-            studentRepository.save(student);
-        }
+//        if(studentRepository.findByEmail("aluno@aluno.com").isEmpty()) {
+//            Student student = new Student();
+//            student.setName("Aluno");
+//            student.setEmail("aluno@aluno.com");
+//            student.setPassword(passwordEncoder.encode("Aluno123"));
+//            student.setCourse(Course.COMPUTER_SCIENCE);
+//            student.setRegistration("22111533");
+//            student.setPhone("82940028922");
+//            student.setPeriod(3);
+//            student.setEntryPeriod("2022.1");
+//            student.setStudentGroup(1);
+//            student.setEntryDate(Date.valueOf(LocalDate.now()));
+//            student.setBirthDate(Date.valueOf(LocalDate.now()));
+//            studentRepository.save(student);
+//        }
 
         // Initialize 50 invitations for manual testing purposes :D
         for (int i = 0; i < 50; i++) {
