@@ -26,4 +26,5 @@ public class StudentResponseDTO {
     private String email;
     private Date entryDate;
     private int studentGroup;
+    private double ira;
 }

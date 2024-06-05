@@ -17,4 +17,8 @@ public interface GradeService {
     List<StudentGradesDTO> getStudentGrades(String studentId);
   
     void deleteGrade(GradeDeleteDTO gradeDeleteDTO);
+
+    List<Double> getStudentIRAPerPeriod(String email);
+
+    List<Double> getStudentGradesAveragePerPeriod(String email);
 }

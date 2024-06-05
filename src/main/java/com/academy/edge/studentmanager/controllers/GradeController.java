@@ -1,12 +1,8 @@
 package com.academy.edge.studentmanager.controllers;
 
 
-import com.academy.edge.studentmanager.dtos.GradeResponseDTO;
-import com.academy.edge.studentmanager.dtos.GradeUpdateDTO;
-import com.academy.edge.studentmanager.dtos.GradeCreateDTO;
+import com.academy.edge.studentmanager.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.academy.edge.studentmanager.dtos.GradeDeleteDTO;
-import com.academy.edge.studentmanager.dtos.StudentGradesDTO;
 
 import com.academy.edge.studentmanager.services.GradeService;
 import jakarta.validation.Valid;
@@ -56,6 +52,20 @@ public class GradeController {
     public ResponseEntity<Void> deleteGrade(@Valid @RequestBody GradeDeleteDTO gradeDeleteDTO){
         gradeService.deleteGrade(gradeDeleteDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{email}/ira")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<List<Double>> getStudentIRAPerPeriod(@PathVariable String email) {
+        List<Double> studentIRAPerPeriod = gradeService.getStudentIRAPerPeriod(email);
+        return new ResponseEntity<>(studentIRAPerPeriod, HttpStatus.OK);
+    }
+
+    @GetMapping("/{email}/average")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
+    public ResponseEntity<List<Double>> getStudentGradesAveragePerPeriod(@PathVariable String email) {
+        List<Double> studentGradesAveragePerPeriod = gradeService.getStudentGradesAveragePerPeriod(email);
+        return new ResponseEntity<>(studentGradesAveragePerPeriod, HttpStatus.OK);
     }
 
     //TODO: temporary method to verify user identity
