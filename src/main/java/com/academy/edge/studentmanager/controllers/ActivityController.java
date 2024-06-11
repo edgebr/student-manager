@@ -1,17 +1,17 @@
 package com.academy.edge.studentmanager.controllers;
 
-import com.academy.edge.studentmanager.dtos.ActivityCreateDTO;
-import com.academy.edge.studentmanager.dtos.ActivityResponseDTO;
-import com.academy.edge.studentmanager.dtos.ActivityUpdateDTO;
-import com.academy.edge.studentmanager.dtos.ActivityDeleteDTO;
+import com.academy.edge.studentmanager.dtos.*;
 import com.academy.edge.studentmanager.services.ActivityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -32,7 +32,17 @@ public class ActivityController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #activityCreateDTO.getStudentEmail()")
     public ResponseEntity<ActivityResponseDTO> saveActivity(@Valid @RequestBody ActivityCreateDTO activityCreateDTO){
-        return new ResponseEntity<>(activityService.saveActivity(activityCreateDTO), HttpStatus.OK);
+        ActivityResponseDTO activityResponseDTO = activityService.saveActivity(activityCreateDTO);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(activityResponseDTO.getActivityId())
+                .toUri();
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setLocation(location);
+
+        return new ResponseEntity<>(activityResponseDTO, responseHeaders, HttpStatus.CREATED);
     }
 
     @PutMapping
