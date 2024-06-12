@@ -1,14 +1,13 @@
 package com.academy.edge.studentmanager.utils;
 
 
-import com.academy.edge.studentmanager.enums.Course;
-import com.academy.edge.studentmanager.enums.InstructorSpecialization;
-import com.academy.edge.studentmanager.models.Instructor;
-import com.academy.edge.studentmanager.models.Student;
+import com.academy.edge.studentmanager.enums.Role;
 import com.academy.edge.studentmanager.models.Invitation;
+import com.academy.edge.studentmanager.models.User;
 import com.academy.edge.studentmanager.repositories.InstructorRepository;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
 import com.academy.edge.studentmanager.repositories.InvitationRepository;
+import com.academy.edge.studentmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @Component
 @Profile("dev")
@@ -29,19 +27,22 @@ public class DataInitializer implements CommandLineRunner {
     private StudentRepository studentRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private InvitationRepository invitationRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args) {
-        if (instructorRepository.findByEmail("admin@admin.com").isEmpty()) {
-            Instructor instructor = new Instructor();
-            instructor.setName("Admin");
-            instructor.setEmail("admin@admin.com");
-            instructor.setPassword(passwordEncoder.encode("Admin123"));
-            instructor.setSpecialization(InstructorSpecialization.TECHNICAL);
-            instructorRepository.save(instructor);
+        if (userRepository.findByEmail("admin@admin.com") == null) {
+            User admin = new User();
+            admin.setName("Admin");
+            admin.setEmail("admin@admin.com");
+            admin.setPassword(passwordEncoder.encode("Admin123"));
+            admin.setRole(Role.ADMIN);
+            userRepository.save(admin);
         }
 
 //        if(studentRepository.findByEmail("aluno@aluno.com").isEmpty()) {

@@ -64,9 +64,13 @@ public class User implements UserDetails {
     @Column(insertable = false, updatable = false)
     String dtype;
 
+    @Column
+    @Enumerated
+    Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+Role.USER.name()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+role.name()));
     }
 
     @Override

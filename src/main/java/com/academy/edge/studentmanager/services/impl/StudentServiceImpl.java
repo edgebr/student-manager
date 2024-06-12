@@ -2,6 +2,7 @@ package com.academy.edge.studentmanager.services.impl;
 
 import com.academy.edge.studentmanager.dtos.StudentCreateDTO;
 import com.academy.edge.studentmanager.dtos.StudentResponseDTO;
+import com.academy.edge.studentmanager.enums.Role;
 import com.academy.edge.studentmanager.models.Invitation;
 import com.academy.edge.studentmanager.models.Student;
 import com.academy.edge.studentmanager.repositories.StudentRepository;
@@ -85,6 +86,7 @@ public class StudentServiceImpl implements StudentService {
         student.setStudentGroup(invitation.getStudentGroup());
         student.setPassword(passwordEncoder.encode(studentCreateDTO.getPassword()));
         student.setPhotoUrl(student.getRegistration()+"_"+file.getOriginalFilename());
+        student.setRole(Role.STUDENT);
       
         try {
             studentRepository.save(student);
