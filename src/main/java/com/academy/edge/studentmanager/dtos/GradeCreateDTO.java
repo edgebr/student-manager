@@ -20,7 +20,6 @@ public class GradeCreateDTO {
     @Max(15)
     private int period;
 
-    @NotNull
     @Min(value = 0, message = "A nota deve estar entre 0 e 10")
     @Max(value = 10, message = "A nota deve estar entre 0 e 10")
     private Double finalGrade;
