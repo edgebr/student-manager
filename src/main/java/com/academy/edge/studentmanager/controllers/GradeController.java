@@ -41,10 +41,10 @@ public class GradeController {
         return new ResponseEntity<>(gradeService.saveGrade(gradeCreateDTO), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<StudentGradesDTO>> getStudentGrades(@PathVariable String email) {
-        return new ResponseEntity<>(gradeService.getStudentGrades(email), HttpStatus.OK);
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.principal.id == #userId")
+    public ResponseEntity<List<StudentGradesDTO>> getStudentGrades(@RequestParam String userId) {
+        return new ResponseEntity<>(gradeService.getStudentGrades(userId), HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -54,17 +54,17 @@ public class GradeController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{email}/ira")
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<Double>> getStudentIRAPerPeriod(@PathVariable String email) {
-        List<Double> studentIRAPerPeriod = gradeService.getStudentIRAPerPeriod(email);
+    @GetMapping("/ira")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.principal.id == #userId")
+    public ResponseEntity<List<Double>> getStudentIRAPerPeriod(@RequestParam String userId) {
+        List<Double> studentIRAPerPeriod = gradeService.getStudentIRAPerPeriod(userId);
         return new ResponseEntity<>(studentIRAPerPeriod, HttpStatus.OK);
     }
 
-    @GetMapping("/{email}/average")
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<Double>> getStudentGradesAveragePerPeriod(@PathVariable String email) {
-        List<Double> studentGradesAveragePerPeriod = gradeService.getStudentGradesAveragePerPeriod(email);
+    @GetMapping("/average")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.principal.id == #userId")
+    public ResponseEntity<List<Double>> getStudentGradesAveragePerPeriod(@RequestParam String userId) {
+        List<Double> studentGradesAveragePerPeriod = gradeService.getStudentGradesAveragePerPeriod(userId);
         return new ResponseEntity<>(studentGradesAveragePerPeriod, HttpStatus.OK);
     }
 

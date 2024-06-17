@@ -89,8 +89,8 @@ public class GradeServiceImpl implements GradeService {
 
 
     @Override
-    public List<StudentGradesDTO> getStudentGrades(String email) {
-        Student student = studentRepository.findByEmail(email)
+    public List<StudentGradesDTO> getStudentGrades(String id) {
+        Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
         List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
@@ -139,12 +139,12 @@ public class GradeServiceImpl implements GradeService {
         and the workload of the subjects of this grades
         See more: https://ufal.br/resolucoes/2023/rco-n-77-de-24-10-2023.pdf (Art. 48) */
     @Override
-    public List<Double> getStudentIRAPerPeriod(String email) {
+    public List<Double> getStudentIRAPerPeriod(String id) {
         Student student = studentRepository
-                            .findByEmail(email)
+                            .findById(id)
                             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
-        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+        List<Grade> grades = gradeRepository.findGradeByStudentId(id);
 
         List<Double> studentIRAPerPeriod = new ArrayList<>();
         List<Double> terms = new ArrayList<>();
@@ -172,12 +172,12 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
-    public List<Double> getStudentGradesAveragePerPeriod(String email) {
+    public List<Double> getStudentGradesAveragePerPeriod(String id) {
         Student student = studentRepository
-                .findByEmail(email)
+                .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
-        List<Grade> grades = gradeRepository.findGradeByStudentId(student.getId());
+        List<Grade> grades = gradeRepository.findGradeByStudentId(id);
 
         List<Double> studentGradesAveragePerPeriod = new ArrayList<>();
 

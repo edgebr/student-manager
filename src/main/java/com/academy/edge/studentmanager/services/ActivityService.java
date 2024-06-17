@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ActivityService {
 
-    List<ActivityResponseDTO> getAllActivities(String email);
+    List<ActivityResponseDTO> getAllActivities(String id);
 
     ActivityResponseDTO saveActivity(ActivityCreateDTO activityCreateDTO);
 

@@ -37,9 +37,9 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<ActivityResponseDTO> getAllActivities(String email) {
+    public List<ActivityResponseDTO> getAllActivities(String id) {
         Student student = studentRepository
-                .findByEmail(email)
+                .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
         List<Activity> activities = activityRepository.findAllByStudent(student);

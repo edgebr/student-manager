@@ -66,6 +66,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentResponseDTO getStudentById(String id) {
+        Student student = studentRepository
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+        return modelMapper.map(student, StudentResponseDTO.class);
+    }
+
+    @Override
     @Transactional
     public StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO, MultipartFile file) {
 
@@ -98,10 +106,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentResponseDTO updateStudent(String email, StudentUpdateDTO studentUpdateDTO) {
+    public StudentResponseDTO updateStudent(String id, StudentUpdateDTO studentUpdateDTO) {
         Student student = studentRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with id: " + id));
 
         modelMapper.map(studentUpdateDTO, student);
         studentRepository.save(student);
@@ -110,10 +118,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentResponseDTO updateStudentPhoto(String email, MultipartFile file) {
+    public StudentResponseDTO updateStudentPhoto(String id, MultipartFile file) {
         Student student = studentRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + email));
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found with email: " + id));
 
         if(!imageContentTypes.contains(file.getContentType())){
             throw new ResponseStatusException(BAD_REQUEST, "File is not a image file");
@@ -142,16 +150,16 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteStudent(String email) {
-        Student student = studentRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
+        Student student = studentRepository.findById(email).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Student not found"));
         student.setDeleted(true);
         studentRepository.save(student);
     }
 
     @Override
-    public StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file) {
+    public StudentResponseDTO updateStudentAcademicRecord(String id, MultipartFile file) {
         long MAX_RECORD_FILE_SIZE = 2000000L; // 2MB
 
-        Student student = studentRepository.findByEmail(email).orElseThrow(
+        Student student = studentRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(NOT_FOUND, "Student not found"));
 
         if(!Objects.equals(file.getContentType(), documentContentType)){

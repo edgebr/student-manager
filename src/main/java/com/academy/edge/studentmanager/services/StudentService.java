@@ -13,14 +13,15 @@ public interface StudentService {
     List<StudentResponseDTO> getStudents();
 
     StudentResponseDTO getStudentByEmail(String email);
+    StudentResponseDTO getStudentById(String id);
 
     StudentResponseDTO insertStudent(StudentCreateDTO studentCreateDTO, MultipartFile file);
 
-    StudentResponseDTO updateStudent(String email, StudentUpdateDTO studentUpdateDTO);
+    StudentResponseDTO updateStudent(String id, StudentUpdateDTO studentUpdateDTO);
 
-    StudentResponseDTO updateStudentPhoto(String email, MultipartFile file);
+    StudentResponseDTO updateStudentPhoto(String id, MultipartFile file);
 
-    void deleteStudent(String email);
+    void deleteStudent(String id);
 
-    StudentResponseDTO updateStudentAcademicRecord(String email, MultipartFile file);
+    StudentResponseDTO updateStudentAcademicRecord(String id, MultipartFile file);
 }

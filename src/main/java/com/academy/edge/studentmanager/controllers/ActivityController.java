@@ -23,10 +23,10 @@ public class ActivityController {
     @Autowired
     public ActivityController(ActivityService activityService) { this.activityService = activityService; }
 
-    @GetMapping("/{email}")
-    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.name == #email")
-    public ResponseEntity<List<ActivityResponseDTO>> getAllActivities(@PathVariable String email){
-        return new ResponseEntity<>(activityService.getAllActivities(email), HttpStatus.OK);
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR') or authentication.principal.id == #userId")
+    public ResponseEntity<List<ActivityResponseDTO>> getAllActivities(@RequestParam String userId){
+        return new ResponseEntity<>(activityService.getAllActivities(userId), HttpStatus.OK);
     }
 
     @PostMapping
