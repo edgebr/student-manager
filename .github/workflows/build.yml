@@ -76,6 +76,6 @@
             ECR_REPOSITORY: student-manager
             IMAGE_TAG: backend-${{ env.commit-hash }}-${{ env.timestamp }}
           run: |
-            docker build -f ./backend/Dockerfile.prod -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:backend-latest-staging ./backend
+            docker build -f ./Dockerfile.prod -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:backend-latest-staging .
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:backend-latest-staging
