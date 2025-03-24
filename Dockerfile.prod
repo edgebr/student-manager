@@ -1,0 +1,17 @@
+FROM eclipse-temurin:21-jdk-alpine AS build-stage
+
+WORKDIR /app
+
+COPY . .
+
+RUN chmod +x gradle && ./gradle assemble
+
+FROM eclipse-temurin:21-jre-alpine AS production-stage
+
+WORKDIR /app
+
+COPY --from=build-stage /app/target/student-manager*.jar  /app/student-manager.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "-Dspring.profiles.active=development", "/app/student-manager.jar"]
