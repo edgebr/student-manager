@@ -10,7 +10,7 @@ FROM eclipse-temurin:21-jre-alpine AS production-stage
 
 WORKDIR /app
 
-COPY --from=build-stage /app/target/student-manager*.jar  /app/student-manager.jar
+COPY --from=build-stage /app/build/libs/student-manager*SNAPSHOT.jar  /app/student-manager.jar
 
 EXPOSE 8080
 
