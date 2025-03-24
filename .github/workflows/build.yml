@@ -34,7 +34,7 @@
             distribution: 'temurin'
             java-version: '21'
         - run: |
-            ./gradlew test
+            ./gradlew build sonar --info
         - name: Sonarqube Scan
           uses: sonarsource/sonarqube-scan-action@v4
           env:
