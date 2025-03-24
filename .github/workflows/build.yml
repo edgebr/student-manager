@@ -1,0 +1,62 @@
+  name: Staging deploy
+  on:
+    push:
+      branches:
+        - dev
+  jobs:
+    tests:
+      name: Tests
+      runs-on: self-hosted
+      steps:
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - uses: actions/setup-java@v4.7.0
+          with:
+            distribution: 'temurin'
+            java-version: '21'
+        - run: |
+            gradlew test
+        - name: Sonarqube Scan
+          uses: sonarsource/sonarqube-scan-action@v4
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    build:
+      name: Build
+      runs-on: self-hosted
+      needs: tests
+      if: github.event_name == 'push'
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Configure AWS credentials ECR
+          uses: aws-actions/configure-aws-credentials@v4.1.0
+          with:
+            aws-access-key-id: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-2
+
+        - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v2.0.1
+
+        - name: Get commit hash
+          id: get-commit-hash
+          run: echo "commit-hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+        - name: Get timestamp
+          id: get-timestamp
+          run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+
+        - name: Build, tag, and push the image to Amazon ECR - Backend
+          id: build-image-backend
+          env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_REPOSITORY: student-manager
+            IMAGE_TAG: backend-${{ env.commit-hash }}-${{ env.timestamp }}
+          run: |
+            docker build -f ./backend/Dockerfile.prod -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:backend-latest-staging ./backend
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            docker push $ECR_REGISTRY/$ECR_REPOSITORY:backend-latest-staging
